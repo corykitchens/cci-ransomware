@@ -1,17 +1,25 @@
 {
-  "name": "cctc",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "moment": "^2.22.1",
-    "react": "^16.3.2",
-    "react-dom": "^16.3.2",
-    "react-scripts": "1.1.4"
-  },
+  "name": "cctc-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "server": "nodemon server.js",
+    "client": "cd client && yarn start",
+    "dev": "concurrently \"yarn server\" \"yarn client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/corykitchens/cctc.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/corykitchens/cctc/issues"
+  },
+  "homepage": "https://github.com/corykitchens/cctc#readme",
+  "dependencies": {
+    "concurrently": "^3.5.1",
+    "express": "^4.16.3"
   }
 }
