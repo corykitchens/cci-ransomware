@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import moment from 'moment';
+import CountdownClockCSS from './CountdownClock.css';
+
 
 class CountdownClock extends Component {
   constructor(props) {
@@ -40,7 +42,7 @@ class CountdownClock extends Component {
     return (
       <div className="box">
         { currentTime }
-        <button onClick={this.increaseTime}>Click</button>
+        {/*<button onClick={this.increaseTime}>Click</button>*/}
       </div>
     )
   }

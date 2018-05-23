@@ -1,11 +1,21 @@
 import React, { Component } from 'react';
 import CountdownClock from '../components/CountdownClock';
 import PasswordInput from '../components/PasswordInput';
+import Title from '../components/Title';
+import ContentMessage from '../components/ContentMessage';
+import Container from '../components/Container';
+import Card from '../components/Card';
+import Columns from '../components/Columns';
+import Column from '../components/Column';
+
 
 class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      title: 'Ransomware',
+      subtitle: 'Data deleted in:',
+      debug: true,
       passwordAttempts: 0,
       correctAttempts: 0,
       incorrectAttempts: 0,
@@ -28,32 +38,25 @@ class Main extends Component {
 
   render() {
     return (
-      <div className="container">
-        <div className="columns">
-          
-          <div className="column">
+      <Container>
+        <Columns>
+          <Column>
+            <Card>
             {/* Ransomware Title */}
-            <h1 className="title">Ransomware</h1>
+            <Title title={this.state.title} classes={'title has-text-danger has-text-center'}/>
             {/* End Ransomware Title */}
-            
             {/* Sub Title */}
-            <h2 className="subtitle">Data deleted in:</h2>
+            <Title title={this.state.subtitle} classes={'subtitle has-text-danger has-text-center'} />
             {/* End Sub Title */}
-            <h3>Found Passwords: {this.state.correctAttempts}</h3>
             {/* Countdown Clock */}
             <CountdownClock />
             {/* End Countdown Clock */}
             
             {/* Ransom Message */}
-            <div className="content">
-            Unless 2 BitCoin is received by haxxzor@tempmail.com
-            </div>
+            <ContentMessage message="Unless 2 BitCoin is received by haxxzor@tempmail.com" />
             {/* End Ransom Message */}
-            
             {/* Instruction Message */}
-            <div className="content">
-            To access admin functions: enter the following passwords:
-            </div>
+            <ContentMessage message="To access admin functions: enter the following passwords:" />
             {/* End Instruction Message */}
 
             {/* TODO - Do some sort of repeat/forEach? */}
@@ -87,9 +90,15 @@ class Main extends Component {
               {/* End Password */}
             </div>
             {/* End Passwords Container*/}
-          </div>
-        </div>
-      </div>
+            </Card>
+          </Column>
+        </Columns>
+        <Columns>
+          <Column>
+          <h3>Found Passwords: {this.state.correctAttempts}</h3>
+          </Column>
+        </Columns>
+      </Container>
     )
   }
 }
