@@ -43,10 +43,10 @@ class Main extends Component {
           <Column>
             <Card>
             {/* Ransomware Title */}
-            <Title title={this.state.title} classes={'title has-text-danger has-text-center'}/>
+            <Title title={this.state.title} classes={'title has-text-danger has-text-centered'}/>
             {/* End Ransomware Title */}
             {/* Sub Title */}
-            <Title title={this.state.subtitle} classes={'subtitle has-text-danger has-text-center'} />
+            <Title title={this.state.subtitle} classes={'subtitle has-text-danger has-text-centered'} />
             {/* End Sub Title */}
             {/* Countdown Clock */}
             <CountdownClock />
