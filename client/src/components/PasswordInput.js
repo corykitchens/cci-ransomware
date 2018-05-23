@@ -27,11 +27,11 @@ class PasswordInput extends Component {
   
   render() {
     const { attempt } = this.state;
+    const { placeholder, disabled } = this.props;
     return (
       <div className="column">
         <form onSubmit={this.handleSubmit}>
-          <input className="input" type="text" placeholder="Password 1" value={attempt} onChange={this.handleChange} />
-          <input type="submit" value="Submit" className="submit" />
+          <input className="input" type="text" placeholder={placeholder} value={attempt} onChange={this.handleChange} disabled={disabled}/>
         </form>
       </div>
     )
