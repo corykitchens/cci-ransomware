@@ -27,7 +27,7 @@ class Main extends Component {
       <Container>
         <Columns>
           <Column>
-            <Card>
+            <Card className="card-container">
             {/* Ransomware Title */}
             <Title title={this.state.title} classes={'title has-text-danger has-text-centered'}/>
             {/* End Ransomware Title */}

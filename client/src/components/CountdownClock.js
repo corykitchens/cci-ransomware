@@ -23,7 +23,7 @@ class CountdownClock extends Component {
   }
 
   componentWillMount() {
-    var now = moment('12-1-1 17:59:59');
+    var now = moment('12-1-1 04:59:59');
     this.state.currentTime = moment(now).format('h:mm:ss')
   }
 
