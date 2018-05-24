@@ -7,6 +7,7 @@ import Container from '../components/Container';
 import Card from '../components/Card';
 import Columns from '../components/Columns';
 import Column from '../components/Column';
+import CountdownClockCSS from '../components/CountdownClock.css';
 
 
 import PasswordManager from '../components/PasswordManager';
@@ -26,7 +27,7 @@ class Main extends Component {
       <Container>
         <Columns>
           <Column>
-            <Card>
+            <Card className="card-container">
             {/* Ransomware Title */}
             <Title title={this.state.title} classes={'title has-text-danger has-text-centered'}/>
             {/* End Ransomware Title */}
@@ -37,7 +38,7 @@ class Main extends Component {
             <CountdownClock />
             {/* End Countdown Clock */}
             {/* Ransom Message */}
-            <ContentMessage message="Unless 2 BitCoin is received by haxxzor@tempmail.com" />
+            <div className="content has-text-centered">Unless 2 <i class="fab fa-bitcoin"></i> is received by haxxzor@tempmail.com</div>
             {/* End Ransom Message */}
             {/* Instruction Message */}
             <ContentMessage message="To access admin functions: enter the following passwords:" />
@@ -46,14 +47,6 @@ class Main extends Component {
             </Card>
           </Column>
         </Columns>
-
-        {/* Debug Mode */}
-        <Columns>
-          <Column>
-          <h3>Found Passwords: {this.state.correctAttempts}</h3>
-          </Column>
-        </Columns>
-        {/* End Debug Mode*/}
       </Container>
     )
   }

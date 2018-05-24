@@ -3,7 +3,7 @@ import React from 'react';
 
 const ContentMessage = ({ message }) => {
     return (
-        <div className="content">{message}</div>
+        <div className="content has-text-centered">{message}</div>
     )
 };
 

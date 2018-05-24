@@ -11,7 +11,39 @@ class PasswordManager extends Component {
           passwordAttempts: 0,
           correctAttempts: 0,
           incorrectAttempts: 0,
-          passwords: ['hello', 'password123', 'qwerty', 'letmein', 'abc123', 'mypassword']
+          passwords: ['hello', 'password123', 'qwerty', 'letmein', 'abc123', 'mypassword'],
+          inputs: [
+            {
+                "key": "a",
+                "disabled": false,
+                "placeholder": "Password 1"
+            },
+            {
+                "key": "b",
+                "disabled": true,
+                "placeholder": "Password 2"
+            },
+            {
+                "key": "c",
+                "disabled": true,
+                "placeholder": "Password 3"
+            },
+            {
+                "key": "d",
+                "disabled": true,
+                "placeholder": "Password 4"
+            },
+            {
+                "key": "e",
+                "disabled": true,
+                "placeholder": "Password 5"
+            },
+            {
+                "key": "f",
+                "disabled": true,
+                "placeholder": "Password 6"
+            },
+          ]
         }
         this.attemptPassword = this.attemptPassword.bind(this);
     }
@@ -32,29 +64,45 @@ class PasswordManager extends Component {
         return (
             <Column>
                 <Columns>
-                    {/* Password */}
-                    <PasswordInput attemptPassword={this.attemptPassword}/>
-                    {/* End Password */}
-                    {/* Password */}
-                    <PasswordInput attemptPassword={this.attemptPassword}/>
-                    {/* End Password */}
+                    {this.state.inputs.slice(0, 2).map((i) => {
+                        return (
+                            <PasswordInput key={i.key} 
+                                           placeholder={i.placeholder} 
+                                           disabled={i.disabled} 
+                                           attemptPassword={this.attemptPassword} />
+                        )    
+                    })}
                 </Columns>
                 <Columns>
-                    {/* Password */}
-                    <PasswordInput attemptPassword={this.attemptPassword}/>
-                    {/* End Password */}
-                    {/* Password */}
-                    <PasswordInput attemptPassword={this.attemptPassword}/>
-                    {/* End Password */}
+                    {this.state.inputs.slice(2, 4).map((i) => {
+                        return (
+                            <PasswordInput key={i.key} 
+                                           placeholder={i.placeholder} 
+                                           disabled={i.disabled} 
+                                           attemptPassword={this.attemptPassword} />
+                        )    
+                    })}
                 </Columns>
                 <Columns>
-                    {/* Password */}
-                    <PasswordInput attemptPassword={this.attemptPassword}/>
-                    {/* End Password */}
-                    {/* Password */}
-                    <PasswordInput attemptPassword={this.attemptPassword}/>
-                    {/* End Password */}
+                    {this.state.inputs.slice(4, 6).map((i) => {
+                        return (
+                            <PasswordInput key={i.key} 
+                                           placeholder={i.placeholder} 
+                                           disabled={i.disabled} 
+                                           attemptPassword={this.attemptPassword} />
+                        )    
+                    })}
                 </Columns>
+                <a class="button is-info is-rounded submit-btn">Submit Password Attempt</a>
+
+                {/* Debug Mode */}
+                <Columns>
+                  <Column>
+                  <h2>Debug Mode</h2>
+                  <h3>Found Passwords: {this.state.correctAttempts}</h3>
+                  </Column>
+                </Columns>
+                {/* End Debug Mode*/}
             </Column>
         )
 

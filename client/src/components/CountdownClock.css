@@ -1,7 +1,18 @@
+.main-container {
+    color: pink;
+}
+
+
 .box {
     background-color: #9D2933;
     width: 80%;
     margin: 0 auto;
     color: #FFF;
     text-align: center;
+}
+
+.submit-btn {
+    margin-top: 5em;
+    margin-bottom: 1em;
+    width: 100%;
 }
