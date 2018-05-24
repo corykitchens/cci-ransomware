@@ -2,8 +2,15 @@
 
 ## Installation
 
+
 ```
-$ npm install -g yarn
-$ yarn install
-$ yarn start
+$ npm install
+$ cd client 
+$ npm install
+```
+
+## Running Locally
+
+```
+$ yarn dev
 ```
