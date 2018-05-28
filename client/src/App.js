@@ -4,9 +4,6 @@ import 'whatwg-fetch';
 
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   componentWillMount() {
     fetch('/api/')

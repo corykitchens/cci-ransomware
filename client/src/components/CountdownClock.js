@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import CountdownClockCSS from './CountdownClock.css';
+import './CountdownClock.css';
 
 
 class CountdownClock extends Component {
@@ -21,7 +21,7 @@ class CountdownClock extends Component {
   }
 
   componentWillMount() {
-    const { countdown, floor, ceiling } = this.state;
+    const { floor, ceiling } = this.state;
     const floorAsMoment = moment('2018-06-23 ' + floor);
     const ceilingAsMoment = moment('2018-06-23 ' + ceiling);
     this.setState({floorAsMoment: floorAsMoment});
@@ -92,7 +92,7 @@ class CountdownClock extends Component {
   render() {
     const { currentTime } = this.state;
     return (
-      <div className="box countdown-clock">
+      <div className="clock-container countdown-clock">
         { currentTime }
       </div>
     )

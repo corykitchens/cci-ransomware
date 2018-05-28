@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Column from './Column';
 import Columns from './Columns';
 import PasswordInput from './PasswordInput';
-
+import Modal from './Modal';
 
 class PasswordManager extends Component {
     constructor(props) {
@@ -12,94 +12,86 @@ class PasswordManager extends Component {
           correctAttempts: 0,
           incorrectAttempts: 0,
           passwords: ['hello', 'password123', 'qwerty', 'letmein', 'abc123', 'mypassword'],
-          inputs: [
-            {
-                "key": "a",
-                "disabled": false,
-                "placeholder": "Password 1"
-            },
-            {
-                "key": "b",
-                "disabled": true,
-                "placeholder": "Password 2"
-            },
-            {
-                "key": "c",
-                "disabled": true,
-                "placeholder": "Password 3"
-            },
-            {
-                "key": "d",
-                "disabled": true,
-                "placeholder": "Password 4"
-            },
-            {
-                "key": "e",
-                "disabled": true,
-                "placeholder": "Password 5"
-            },
-            {
-                "key": "f",
-                "disabled": true,
-                "placeholder": "Password 6"
-            },
-          ]
+          foundFlags: []
         }
         this.attemptPassword = this.attemptPassword.bind(this);
+        this.persistState = this.persistState.bind(this);
     }
 
-    attemptPassword(data) {
-      console.log('Attempted password ->' + data);
-      this.state.passwords.filter((p) => {
-        if (p === data) {
-          this.setState({ correctAttempts: ++this.state.correctAttempts});
-        } else {
-          this.setState({ incorrectAttempts: ++this.state.incorrectAttempts});
+    componentWillMount() {
+      if (localStorage.getItem('foundFlags')) {
+        localStorage.getItem('foundFlags').split(',').map((p) => {
+          this.state.foundFlags.push(p);
+        });
+        this.setState({foundFlags: this.state.foundFlags});
+      }
+      if (localStorage.getItem('correctAttempts')) {
+        this.setState({correctAttempts: localStorage.getItem('correctAttempts')});
+      }
+      this.state.foundFlags.forEach((e) => {
+        let idx = this.state.passwords.indexOf(e);
+        if (idx > -1) {
+          this.state.passwords.splice(idx, 1);
+          this.setState({passwords: this.state.passwords});
         }
-        this.setState({ passwordAttempts: ++this.state.passwordAttempts});
       });
     }
 
+    attemptPassword(data) {
+      let idx = this.state.passwords.indexOf(data);
+      if (idx > -1) {
+        const { foundFlags, passwords } = this.state;
+        foundFlags.push(data);
+        passwords.splice(idx, 1);
+        this.setState({ correctAttempts: ++this.state.correctAttempts});
+        this.setState({foundFlags: foundFlags});
+        this.setState({passwords: passwords});
+        this.persistState();
+        if (this.state.passwords.length === 0) {
+          alert('Game complete');
+        }
+      } else {
+        this.setState({ incorrectAttempts: ++this.state.incorrectAttempts});
+        this.setState({modalClasses: 'is-active'});
+      }
+      this.setState({ passwordAttempts: ++this.state.passwordAttempts});
+    }
+
+    persistState() {
+      localStorage.setItem('foundFlags', this.state.foundFlags);
+      localStorage.setItem('correctAttempts', this.state.correctAttempts);
+    }
+
     render() {
+      const { foundFlags } = this.state;
         return (
             <Column>
                 <Columns>
-                    {this.state.inputs.slice(0, 2).map((i) => {
-                        return (
-                            <PasswordInput key={i.key} 
-                                           placeholder={i.placeholder} 
-                                           disabled={i.disabled} 
-                                           attemptPassword={this.attemptPassword} />
-                        )    
-                    })}
+                    <PasswordInput placeholder="Attempt Password" attemptPassword={this.attemptPassword} />
                 </Columns>
-                <Columns>
-                    {this.state.inputs.slice(2, 4).map((i) => {
-                        return (
-                            <PasswordInput key={i.key} 
-                                           placeholder={i.placeholder} 
-                                           disabled={i.disabled} 
-                                           attemptPassword={this.attemptPassword} />
-                        )    
-                    })}
-                </Columns>
-                <Columns>
-                    {this.state.inputs.slice(4, 6).map((i) => {
-                        return (
-                            <PasswordInput key={i.key} 
-                                           placeholder={i.placeholder} 
-                                           disabled={i.disabled} 
-                                           attemptPassword={this.attemptPassword} />
-                        )    
-                    })}
-                </Columns>
-                <a class="button is-info is-rounded submit-btn">Submit Password Attempt</a>
-
                 {/* Debug Mode */}
                 <Columns>
+                  <Modal props={this.state.modalClasses} />
                   <Column>
-                  <h2>Debug Mode</h2>
-                  <h3>Found Passwords: {this.state.correctAttempts}</h3>
+                    <h2>Debug Mode</h2>
+                    <div className="content">
+                      Found Passwords: {this.state.correctAttempts}
+                    </div>
+                    <div className="content">
+                      Password Attempts: {this.state.passwordAttempts}
+                    </div>
+                    <div className="content">
+                      Correct Attempts: {this.state.correctAttempts}
+                    </div>
+                    <div className="content">
+                      Incorrect Attempts: {this.state.incorrectAttempts}
+                    </div>
+                    <div className="content">
+                      Passwords: {this.state.passwords.join(',')}
+                    </div>
+                    <div className="content">
+                      Found Flags: {this.state.foundFlags}
+                    </div>
                   </Column>
                 </Columns>
                 {/* End Debug Mode*/}

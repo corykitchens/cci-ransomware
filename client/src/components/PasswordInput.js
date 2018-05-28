@@ -20,6 +20,7 @@ class PasswordInput extends Component {
   }
 
   handleSubmit(e) {
+    console.log('Woohoo submit');
     e.preventDefault();
     const { attempt } = this.state;
     this.props.attemptPassword(attempt);
@@ -31,7 +32,8 @@ class PasswordInput extends Component {
     return (
       <div className="column">
         <form onSubmit={this.handleSubmit}>
-          <input className="input" type="text" placeholder={placeholder} value={attempt} onChange={this.handleChange} disabled={disabled}/>
+          <input className="input" type="password" placeholder={placeholder} value={attempt} onChange={this.handleChange} disabled={disabled}/>
+          <button className="button is-info is-rounded submit-btn" type="submit">Submit Password Attempt</button>
         </form>
       </div>
     )
