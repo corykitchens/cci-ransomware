@@ -4,7 +4,7 @@
 
 
 .box {
-    background-color: #9D2933;
+    background-color: #2d3436;
     width: 80%;
     margin: 0 auto;
     color: #FFF;
@@ -15,4 +15,11 @@
     margin-top: 5em;
     margin-bottom: 1em;
     width: 100%;
+}
+
+.countdown-clock {
+  font-family: Orbitron;
+  color: #e53935;
+  font-size: 5em;
+  letter-spacing: 0.5em;
 }
