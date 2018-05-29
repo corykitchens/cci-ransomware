@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import './CountdownClock.css';
 
 
 class CountdownClock extends Component {
@@ -86,7 +85,6 @@ class CountdownClock extends Component {
   completeCountDown() {
     clearInterval(this.intervalId);
     this.setState({countdownComplete: true});
-    alert('Countdown Complete');
   }
 
   render() {

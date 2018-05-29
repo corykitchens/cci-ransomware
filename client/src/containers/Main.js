@@ -6,7 +6,6 @@ import Container from '../components/Container';
 import Card from '../components/Card';
 import Columns from '../components/Columns';
 import Column from '../components/Column';
-import '../components/CountdownClock.css';
 
 
 import PasswordManager from '../components/PasswordManager';
@@ -20,11 +19,16 @@ class Main extends Component {
       debug: true,
     }
     this.decrementClock = this.decrementClock.bind(this);
+    this.gameCompleted = this.gameCompleted.bind(this);
   }
 
   decrementClock() {
     console.log('Calling child decrement');
     this.child.decrement();
+  }
+
+  gameCompleted() {
+    this.child.completeCountDown();
   }
 
   render() {
@@ -48,7 +52,7 @@ class Main extends Component {
             {/* Instruction Message */}
             <ContentMessage message="To access admin functions: enter the following passwords:" />
             {/* End Instruction Message */}
-            <PasswordManager decrementClock={this.decrementClock} />
+            <PasswordManager decrementClock={this.decrementClock} gameCompleted={this.gameCompleted} />
             </Card>
           </Column>
         </Columns>

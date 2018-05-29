@@ -6,8 +6,6 @@ import Container from '../components/Container';
 import Card from '../components/Card';
 import Columns from '../components/Columns';
 import Column from '../components/Column';
-import '../components/CountdownClock.css';
-
 
 
 class Login extends Component {
@@ -18,7 +16,8 @@ class Login extends Component {
       title: 'Ransomware',
       subtitle: 'Login',
       username: '',
-      password: ''
+      password: '',
+      modalText: ''
     }
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
@@ -57,7 +56,9 @@ class Login extends Component {
                     <label className="label">Password</label>
                   <input className="input" type="password" placeholder="Password" value={this.state.password}  onChange={this.handlePasswordChange}/>
                   <Link to="/rules">
-                    <button className="button is-info is-rounded submit-btn">Login</button>
+                    <div class="has-text-centered">
+                      <button className="button is-info is-rounded has-text-centered submit-btn">Login</button>
+                    </div>
                   </Link>
                 </div>
               </div>

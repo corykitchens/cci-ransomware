@@ -12,11 +12,16 @@ class PasswordManager extends Component {
           correctAttempts: 0,
           incorrectAttempts: 0,
           passwords: ['hello', 'password123', 'qwerty', 'letmein', 'abc123', 'mypassword'],
-          foundFlags: []
+          foundFlags: [],
+          modalClasses: ''
         }
         this.attemptPassword = this.attemptPassword.bind(this);
         this.persistState = this.persistState.bind(this);
+        this.enableModal = this.enableModal.bind(this);
+        this.disableModal = this.disableModal.bind(this);
     }
+
+
 
     componentWillMount() {
       if (localStorage.getItem('foundFlags')) {
@@ -41,19 +46,25 @@ class PasswordManager extends Component {
       let idx = this.state.passwords.indexOf(data);
       if (idx > -1) {
         const { foundFlags, passwords } = this.state;
-        foundFlags.push(data);
+        this.state.foundFlags.push(data);
         passwords.splice(idx, 1);
         this.setState({ correctAttempts: ++this.state.correctAttempts});
-        this.setState({foundFlags: foundFlags});
+        this.setState({foundFlags: this.state.foundFlags});
         this.setState({passwords: passwords});
         this.persistState();
+        this.setState({modalText: 'Correct!'});
+        this.enableModal();
         if (this.state.passwords.length === 0) {
-          alert('Game complete');
+          this.setState({modalText: 'Game Complete!'});
+          this.props.gameCompleted();
+          this.enableModal();
         }
       } else {
         this.setState({ incorrectAttempts: ++this.state.incorrectAttempts});
         this.setState({modalClasses: 'is-active'});
         this.props.decrementClock();
+        this.setState({modalText: 'Incorrect!'});
+        this.enableModal();
       }
       this.setState({ passwordAttempts: ++this.state.passwordAttempts});
     }
@@ -61,6 +72,14 @@ class PasswordManager extends Component {
     persistState() {
       localStorage.setItem('foundFlags', this.state.foundFlags);
       localStorage.setItem('correctAttempts', this.state.correctAttempts);
+    }
+
+    enableModal() {
+      this.setState({modalClasses: 'is-active'});
+    }
+
+    disableModal() {
+      this.setState({modalClasses: ''});
     }
 
     render() {
@@ -72,30 +91,36 @@ class PasswordManager extends Component {
                 </Columns>
                 {/* Debug Mode */}
                 <Columns>
-                  <Modal props={this.state.modalClasses} />
                   <Column>
-                    <h2>Debug Mode</h2>
-                    <div className="content">
-                      Found Passwords: {this.state.correctAttempts}
-                    </div>
-                    <div className="content">
-                      Password Attempts: {this.state.passwordAttempts}
-                    </div>
-                    <div className="content">
-                      Correct Attempts: {this.state.correctAttempts}
-                    </div>
-                    <div className="content">
-                      Incorrect Attempts: {this.state.incorrectAttempts}
-                    </div>
-                    <div className="content">
-                      Passwords: {this.state.passwords.join(',')}
-                    </div>
-                    <div className="content">
-                      Found Flags: {this.state.foundFlags}
+                    <div className="content debug-container">
+                      <h2>Debug Mode</h2>
+                      <div className="content">
+                        <table className="table">
+                          <thead>
+                            <tr>
+                              <td>Password Attempts</td>
+                              <td>Correct Attempts</td>
+                              <td>Incorrect Attempts</td>
+                              <td>Passwords</td>
+                              <td>Found Flags</td>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>{this.state.passwordAttempts}</td>
+                              <td>{this.state.correctAttempts}</td>
+                              <td>{this.state.incorrectAttempts}</td>
+                              <td>{this.state.passwords.join(',')}</td>
+                              <td>{this.state.foundFlags.join(',')}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </Column>
                 </Columns>
                 {/* End Debug Mode*/}
+                <Modal classNames={this.state.modalClasses} disableModal={this.disableModal} modalText={this.state.modalText}/>
             </Column>
         )
 
