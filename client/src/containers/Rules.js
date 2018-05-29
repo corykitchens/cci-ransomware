@@ -19,7 +19,7 @@ const Rules = (props) => {
             <Title title="Ransomware" classes={'title has-text-link  has-text-centered'}/>
             <Title title="Rules" classes={'title has-text-info    has-text-centered'}/>
             <div className="content is-medium">
-              <ul>
+              <ul className="rules-list has-text-centered">
                 <li>You must find 5 hidden passwords</li>
                 <li>You are given 5 hours to find all 5 passwords</li>
                 <li>The time limit is 5 hours</li>
@@ -27,7 +27,9 @@ const Rules = (props) => {
               </ul>
             </div>
           <Link to="/main">
-            <button className="button is-info is-rounded submit-btn">Begin!</button>
+            <div class="box has-text-centered">
+              <button className="button is-info is-rounded has-text-centered submit-btn">Begin!</button>
+            </div>
           </Link>
           </Card>
         </Column>

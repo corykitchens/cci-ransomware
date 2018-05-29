@@ -19,6 +19,12 @@ class Main extends Component {
       subtitle: 'Data deleted in:',
       debug: true,
     }
+    this.decrementClock = this.decrementClock.bind(this);
+  }
+
+  decrementClock() {
+    console.log('Calling child decrement');
+    this.child.decrement();
   }
 
   render() {
@@ -34,7 +40,7 @@ class Main extends Component {
             <Title title={this.state.subtitle} classes={'subtitle has-text-danger has-text-centered'} />
             {/* End Sub Title */}
             {/* Countdown Clock */}
-            <CountdownClock />
+            <CountdownClock ref={ instance => { this.child = instance; }}/>
             {/* End Countdown Clock */}
             {/* Ransom Message */}
             <div className="content has-text-centered">Unless 2 <i className="fab fa-bitcoin"></i> is received by haxxzor@tempmail.com</div>
@@ -42,7 +48,7 @@ class Main extends Component {
             {/* Instruction Message */}
             <ContentMessage message="To access admin functions: enter the following passwords:" />
             {/* End Instruction Message */}
-            <PasswordManager />
+            <PasswordManager decrementClock={this.decrementClock} />
             </Card>
           </Column>
         </Columns>

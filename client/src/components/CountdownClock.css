@@ -1,3 +1,12 @@
+html,
+body {
+  background-color: #eee;
+}
+.container {
+  background-color: red;
+  margin-top: 5em;
+  background-color: #eee;
+}
 .main-container {
     color: pink;
 }
@@ -14,7 +23,7 @@
 .submit-btn {
     margin-top: 5em;
     margin-bottom: 1em;
-    width: 100%;
+    width: 50%;
 }
 
 .countdown-clock {
@@ -22,4 +31,15 @@
   color: #e53935;
   font-size: 5em;
   letter-spacing: 0.5em;
+}
+
+.login-form {
+  padding: 1.2em;
+  background-color: #eee;
+  border: 1px solid #ddd;
+}
+
+li {
+  list-style: none;
+  padding: 0.2em;
 }

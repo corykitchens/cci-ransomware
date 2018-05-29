@@ -47,16 +47,21 @@ class Login extends Component {
             <Card className="card-container">
             <Title title={this.state.title} classes={'title has-text-danger has-text-centered'}/>
             <Title title={this.state.subtitle} classes={'subtitle has-text-danger has-text-centered'} />
-            <div className="content">
-              <div className="field">
-                <label class="label">Team Username</label>
-                <input className="input" type="text" placeholder="Team Name" value={this.state.username} onChange={this.handleUsernameChange}/>
+            <Columns>
+              <div className="column is-half is-offset-one-quarter">
+                <div className="content login-form">
+                  <div className="field">
+                    <label className="label">Team Username</label>
+                    <input className="input" type="text" placeholder="Team Name" value={this.state.username} onChange={this.handleUsernameChange}/>
+                  </div>
+                    <label className="label">Password</label>
+                  <input className="input" type="password" placeholder="Password" value={this.state.password}  onChange={this.handlePasswordChange}/>
+                  <Link to="/rules">
+                    <button className="button is-info is-rounded submit-btn">Login</button>
+                  </Link>
+                </div>
               </div>
-              <input className="input" type="password" placeholder="Password" value={this.state.password}  onChange={this.handlePasswordChange}/>
-              <Link to="/rules">
-                <button className="button is-info is-rounded submit-btn">Login</button>
-              </Link>
-            </div>
+            </Columns>
             </Card>
           </Column>
         </Columns>

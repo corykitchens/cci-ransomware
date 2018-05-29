@@ -53,6 +53,7 @@ class PasswordManager extends Component {
       } else {
         this.setState({ incorrectAttempts: ++this.state.incorrectAttempts});
         this.setState({modalClasses: 'is-active'});
+        this.props.decrementClock();
       }
       this.setState({ passwordAttempts: ++this.state.passwordAttempts});
     }

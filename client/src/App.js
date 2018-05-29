@@ -8,7 +8,7 @@ import {
 import Login from './containers/Login';
 import Rules from './containers/Rules';
 import Main from './containers/Main';
-
+import './components/CountdownClock.css';
 import 'whatwg-fetch';
 
 
