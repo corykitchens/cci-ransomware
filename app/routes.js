@@ -5,7 +5,7 @@ const router = express.Router();
 router.post('/api/auth', (req, res) => {
   // req.params.username
   // req.params.password
-  res.status(200).json({data: "Login attempt"});
+  res.status(200).json({data: req});
 });
 
 // Attempt a Password
