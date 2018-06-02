@@ -21,7 +21,7 @@
   "dependencies": {
     "concurrently": "^3.5.1",
     "express": "^4.16.3",
-    "mongoose": "^5.1.2",
+    "pg": "^7.4.3",
     "whatwg-fetch": "^2.0.4"
   },
   "devDependencies": {
