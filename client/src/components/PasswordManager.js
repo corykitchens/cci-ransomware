@@ -19,6 +19,7 @@ class PasswordManager extends Component {
         this.persistState = this.persistState.bind(this);
         this.enableModal = this.enableModal.bind(this);
         this.disableModal = this.disableModal.bind(this);
+        this.wasAttemptSuccessfull = this.wasAttemptSuccessfull.bind(this);
     }
 
 
@@ -42,15 +43,9 @@ class PasswordManager extends Component {
       });
     }
 
-    attemptPassword(data) {
-      let idx = this.state.passwords.indexOf(data);
-      if (idx > -1) {
-        const { foundFlags, passwords } = this.state;
-        this.state.foundFlags.push(data);
-        passwords.splice(idx, 1);
+    wasAttemptSuccessfull(resp) {
+      if (resp.message === 'Attempt Successul') {
         this.setState({ correctAttempts: ++this.state.correctAttempts});
-        this.setState({foundFlags: this.state.foundFlags});
-        this.setState({passwords: passwords});
         this.persistState();
         this.setState({modalText: 'Correct!'});
         this.enableModal();
@@ -66,6 +61,22 @@ class PasswordManager extends Component {
         this.setState({modalText: 'Incorrect!'});
         this.enableModal();
       }
+
+    }
+    attemptPassword(data) {
+      fetch('/api/flag', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          flag: data,
+        })
+      })
+      .then(resp => resp.json())
+      .then(resp => this.wasAttemptSuccessfull(resp))
+      .catch(error => console.log(error));
+
       this.setState({ passwordAttempts: ++this.state.passwordAttempts});
     }
 

@@ -24,7 +24,7 @@ module.exports = {
     .catch(err => res.send(err));
   },
   attemptFlag: (req, res) => {
-    query(db, queries.attemptFlag, [req.body.flag])
+    query(queries.attemptFlag, [req.body.flag])
     .then(results => isValidFlag(results.rows[0]) ? res.send({message: 'Attempt Successul'}) : res.send({message: 'Incorrect Attempt'}))
     .catch(err => res.send(err))
   }
