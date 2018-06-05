@@ -14,13 +14,6 @@ import 'whatwg-fetch';
 
 class App extends Component {
 
-  componentWillMount() {
-    fetch('/api/')
-      .then(resp => resp.json())
-      .then(resp => console.log(resp))
-      .catch(error => console.log(error));
-  }
-
   render() {
     return (
       <Router>

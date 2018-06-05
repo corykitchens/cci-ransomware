@@ -1,13 +1,13 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
-const db = require('./config/db');
-
-
-db.then(() => console.log('Database connected'),
-        err => console.log(err));
-
+const bodyParser = require('body-parser');
+const routes = require('./app/routes.js');
 const port = process.env.PORT || 5000;
 
-app.get('/api/', (req, res) => res.send({message: "Hello World"}));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use('/', routes);
+
 
 app.listen(port, () => console.log(`Server running on port ${port}`));
