@@ -14,5 +14,7 @@ module.exports = {
   getTeamsFlags: 'select distinct team.team_id, team.name, flag.flag_id, flag.value from team \
                  join team_flag on team.team_id = team_flag.team_id \
                  join flag on team_flag.flag_id = flag.flag_id \
-                 WHERE team.team_id = $1'
+                 WHERE team.team_id = $1',
+
+  auth: 'select team_id, name, password from team where name=$1'
 }

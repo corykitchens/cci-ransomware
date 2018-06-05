@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
+import {browserHistory} from 'react-router';
 import Title from '../components/Title';
 import ContentMessage from '../components/ContentMessage';
 import Container from '../components/Container';
@@ -21,6 +22,7 @@ class Login extends Component {
     }
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
+    this.auth = this.auth.bind(this);
   }
 
   handleUsernameChange(e) {
@@ -36,6 +38,26 @@ class Login extends Component {
     e.preventDefault();
     const { attempt } = this.state;
     this.props.attemptPassword(attempt);
+  }
+
+  auth() {
+    fetch('/api/auth', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: this.state.username,
+        password: this.state.password,
+      })
+    })
+    .then(resp => resp.json())
+    .then(results => {
+      const { token } = results;
+      localStorage.setItem('token', token);
+
+    })
+    .catch(err => console.log(err));
   }
 
   render() {
@@ -55,11 +77,9 @@ class Login extends Component {
                   </div>
                     <label className="label">Password</label>
                   <input className="input" type="password" placeholder="Password" value={this.state.password}  onChange={this.handlePasswordChange}/>
-                  <Link to="/rules">
                     <div class="has-text-centered">
-                      <button className="button is-info is-rounded has-text-centered submit-btn">Login</button>
+                      <button className="button is-info is-rounded has-text-centered submit-btn" onClick={this.auth}>Login</button>
                     </div>
-                  </Link>
                 </div>
               </div>
             </Columns>
