@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import {browserHistory} from 'react-router';
 import Title from '../components/Title';
 import ContentMessage from '../components/ContentMessage';
@@ -55,12 +55,15 @@ class Login extends Component {
     .then(results => {
       const { token } = results;
       localStorage.setItem('token', token);
-
+      this.setState({authenticated: true});
     })
     .catch(err => console.log(err));
   }
 
   render() {
+    if (this.state.authenticated) {
+      return <Redirect to='/rules' />
+    }
     return (
       <Container>
         <Columns>
