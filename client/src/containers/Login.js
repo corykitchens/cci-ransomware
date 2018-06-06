@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom'
 import {browserHistory} from 'react-router';
+import Modal from '../components/Modal';
 import Title from '../components/Title';
 import ContentMessage from '../components/ContentMessage';
 import Container from '../components/Container';
@@ -23,6 +24,8 @@ class Login extends Component {
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
     this.auth = this.auth.bind(this);
+    this.enableModal = this.enableModal.bind(this);
+    this.disableModal = this.disableModal.bind(this);
   }
 
   handleUsernameChange(e) {
@@ -40,6 +43,14 @@ class Login extends Component {
     this.props.attemptPassword(attempt);
   }
 
+  enableModal() {
+    this.setState({modalClasses: 'is-active'});
+  }
+
+  disableModal() {
+    this.setState({modalClasses: ''});
+  }
+
   auth() {
     fetch('/api/auth', {
       method: 'POST',
@@ -53,11 +64,16 @@ class Login extends Component {
     })
     .then(resp => resp.json())
     .then(results => {
+      console.log('Here');
+      console.log(results);
       const { token } = results;
       localStorage.setItem('token', token);
       this.setState({authenticated: true});
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      this.setState({modalText: 'Invalid Credentials'});
+      this.enableModal();
+    });
   }
 
   render() {
@@ -89,6 +105,7 @@ class Login extends Component {
             </Card>
           </Column>
         </Columns>
+        <Modal classNames={this.state.modalClasses} disableModal={this.disableModal} modalText={this.state.modalText}/>
       </Container>
 
     )

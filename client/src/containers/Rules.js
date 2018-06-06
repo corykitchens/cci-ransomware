@@ -10,6 +10,7 @@ import Column from '../components/Column';
 
 
 const Rules = (props) => {
+  // Probably a better way to do this
   
   if (!localStorage.getItem('token')) {
     return <Redirect to='/' />
