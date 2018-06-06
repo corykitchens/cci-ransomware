@@ -25,7 +25,7 @@ const Rules = (props) => {
             <div className="column is-half is-offset-one-quarter">
               <ul className="rules-list">
                 <li>You must find 5 hidden passwords</li>
-                <li>You are given 5 hours to find all 5 passwords</li>
+                <li>You are given 5 hours to find all 6 passwords</li>
                 <li>The time limit is 5 hours</li>
                 <li>For each incorrect attempt, 15 minutes will be decremented from the time</li>
               </ul>
