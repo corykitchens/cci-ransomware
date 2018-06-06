@@ -15,12 +15,7 @@ create table public.flag (
 create table public.team (
   team_id int not null,
   name  varchar(100) not null,
-  user_id int
-);
-
-create table public.user (
-  user_id int not null,
-  password varchar(100) not null
+  password varchar(100)
 );
 
 create table public.contest_flag (
@@ -35,7 +30,7 @@ create table public.contest_team (
 
 create table public.team_flag (
   team_id int not null,
-  flag_id int not null
+  flag_id int not null,
   attempt timestamp
 );
 
@@ -51,9 +46,6 @@ add constraint flag_pkey primary key(flag_id);
 alter table public.team
 add constraint team_pkey primary key(team_id);
 
-alter table public.user
-add constraint user_pkey primary key(user_id);
-
 -- 
 -- Foreign Keys
 -- 
@@ -61,10 +53,6 @@ add constraint user_pkey primary key(user_id);
 alter table public.contest
 add constraint fk_winner_id foreign key(winner_id)
 references public.team (team_id);
-
-alter table public.team
-add constraint fk_user_id foreign key (user_id)
-references public.user (user_id);
 
 alter table public.contest_flag
 add constraint fk_contest_id foreign key (contest_id)
@@ -96,13 +84,16 @@ insert into public.contest
 
 -- Create Teams
 insert into public.team
-  values (2, 'teamb');
+  values (1, 'teama', 'teama');
 
 insert into public.team
-  values (3, 'teamc');
+  values (2, 'teamb', 'teamb');
 
 insert into public.team
-  values (4, 'teamd');
+  values (3, 'teamc', 'teamc');
+
+insert into public.team
+  values (4, 'teamd', 'teamd');
 
 -- Create Flags
 insert into public.flag

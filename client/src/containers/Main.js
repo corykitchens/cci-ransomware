@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import CountdownClock from '../components/CountdownClock';
 import Title from '../components/Title';
 import ContentMessage from '../components/ContentMessage';
@@ -32,6 +33,9 @@ class Main extends Component {
   }
 
   render() {
+    if (!localStorage.getItem('token')) {
+      return <Redirect to='/' />
+    }
     return (
       <Container>
         <Columns>

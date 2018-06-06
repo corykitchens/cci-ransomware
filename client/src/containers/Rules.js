@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import Title from '../components/Title';
 import ContentMessage from '../components/ContentMessage';
 import Container from '../components/Container';
@@ -10,6 +10,11 @@ import Column from '../components/Column';
 
 
 const Rules = (props) => {
+  // Probably a better way to do this
+  
+  if (!localStorage.getItem('token')) {
+    return <Redirect to='/' />
+  }
   return (
     <Container>
       <Columns>

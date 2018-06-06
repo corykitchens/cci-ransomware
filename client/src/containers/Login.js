@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
+import {browserHistory} from 'react-router';
+import Modal from '../components/Modal';
 import Title from '../components/Title';
 import ContentMessage from '../components/ContentMessage';
 import Container from '../components/Container';
@@ -21,6 +23,9 @@ class Login extends Component {
     }
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
+    this.auth = this.auth.bind(this);
+    this.enableModal = this.enableModal.bind(this);
+    this.disableModal = this.disableModal.bind(this);
   }
 
   handleUsernameChange(e) {
@@ -38,7 +43,43 @@ class Login extends Component {
     this.props.attemptPassword(attempt);
   }
 
+  enableModal() {
+    this.setState({modalClasses: 'is-active'});
+  }
+
+  disableModal() {
+    this.setState({modalClasses: ''});
+  }
+
+  auth() {
+    fetch('/api/auth', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: this.state.username,
+        password: this.state.password,
+      })
+    })
+    .then(resp => resp.json())
+    .then(results => {
+      console.log('Here');
+      console.log(results);
+      const { token } = results;
+      localStorage.setItem('token', token);
+      this.setState({authenticated: true});
+    })
+    .catch(err => {
+      this.setState({modalText: 'Invalid Credentials'});
+      this.enableModal();
+    });
+  }
+
   render() {
+    if (this.state.authenticated) {
+      return <Redirect to='/rules' />
+    }
     return (
       <Container>
         <Columns>
@@ -55,17 +96,16 @@ class Login extends Component {
                   </div>
                     <label className="label">Password</label>
                   <input className="input" type="password" placeholder="Password" value={this.state.password}  onChange={this.handlePasswordChange}/>
-                  <Link to="/rules">
                     <div class="has-text-centered">
-                      <button className="button is-info is-rounded has-text-centered submit-btn">Login</button>
+                      <button className="button is-info is-rounded has-text-centered submit-btn" onClick={this.auth}>Login</button>
                     </div>
-                  </Link>
                 </div>
               </div>
             </Columns>
             </Card>
           </Column>
         </Columns>
+        <Modal classNames={this.state.modalClasses} disableModal={this.disableModal} modalText={this.state.modalText}/>
       </Container>
 
     )
