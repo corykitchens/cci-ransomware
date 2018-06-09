@@ -103,16 +103,12 @@ class PasswordManager extends Component {
                 {/* Debug Mode */}
                 <Columns>
                   <Column>
-                    <div className="content debug-container">
-                      <h2>Debug Mode</h2>
+                    <div className="content">
                       <div className="content">
                         <table className="table">
                           <thead>
                             <tr>
-                              <td>Password Attempts</td>
-                              <td>Correct Attempts</td>
-                              <td>Incorrect Attempts</td>
-                              <td>Passwords</td>
+                              <td>Flag Attempts</td>
                               <td>Found Flags</td>
                             </tr>
                           </thead>
@@ -120,9 +116,6 @@ class PasswordManager extends Component {
                             <tr>
                               <td>{this.state.passwordAttempts}</td>
                               <td>{this.state.correctAttempts}</td>
-                              <td>{this.state.incorrectAttempts}</td>
-                              <td>{this.state.passwords.join(',')}</td>
-                              <td>{this.state.foundFlags.join(',')}</td>
                             </tr>
                           </tbody>
                         </table>
