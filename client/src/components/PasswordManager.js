@@ -49,12 +49,12 @@ class PasswordManager extends Component {
     }
 
     wasAttemptSuccessfull(resp) {
-      if (resp.message === 'Attempt Successul') {
+      if (resp.message.indexOf('correct') !== -1) {
         this.setState({ correctAttempts: ++this.state.correctAttempts});
         this.persistState();
         this.setState({modalText: 'Correct!'});
         this.enableModal();
-        if (this.state.passwords.length === 0) {
+        if (resp.gameOver) {
           this.setState({modalText: 'Game Complete!'});
           this.props.gameCompleted();
           this.enableModal();

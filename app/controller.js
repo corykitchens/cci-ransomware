@@ -4,10 +4,10 @@ const jwt = require('jsonwebtoken');
 
 
 const userCache = {
-  team_id: 1,
+  team_id: null,
   flagsFound: {},
   maxFlag: 6,
-}
+};
 
 const tokenIsValid = (givenToken) => {
   if (givenToken && userCache.hasOwnProperty('token')) {
@@ -23,45 +23,31 @@ async function isValidFlag (flag_id) {
     return results.rows[0];
   }
   return {};
-}
+};
 
 const addFlagToUserCache = (flag_id, timeStamp) => {
   userCache.flagsFound[flag_id] = timeStamp;
-}
+};
 
-const persistAttemptToDb = (flag_id, timeStamp) => {
-  query(queries.insertFoundFlag, [userCache['team_id'], flag_id, timeStamp])
-  .then((results) => {
-    if (results.rowCount > 0) {
-      return true;
-    } else {
-      return false;
-    }
-  })
-  .catch((err) => {
-    return err;
-  })
-}
+async function persistAttemptToDb(flag_id, timeStamp) {
+  const results = await query(queries.insertFoundFlag, [userCache['team_id'], flag_id, timeStamp]);
+  return results;
+};
 
-const isGameOver = (req, res) => {
-  query(queries.getTeamFlagCount, [userCache.team_id])
-  .then((results) => {
-    console.log('Received count');
-    console.log(results.rows[0].count);
-    return results.rows[0].count === userCache.maxFlag;
-  })
-  .catch((err) => {
-    return err;
-  })
-}
+async function isGameOver() {
+  const results = await query(queries.getTeamFlagCount, [userCache.team_id])
+  return results.rows[0].count == userCache.maxFlag;
+};
 
 const prepareResponse = (res) => {
-  if (isGameOver) {
-    return res.send({message: "Correct", gameOver: true});
-  } else {
-    return res.send({message: "Correct", gameOver: false});
-  }
-}
+  isGameOver()
+  .then((results) => {
+    return res.send({message: "correct", gameOver: results});
+  })
+  .catch((err) => {
+    return res.send({message: "correct", gameOver: err});
+  })
+};
 
 module.exports = {
   
@@ -111,7 +97,7 @@ module.exports = {
 
   attemptFlag: (req, res) => {
     let timeStamp = new Date();
-    if (!tokenIsValid(req.body.token)) {
+    if (tokenIsValid(req.body.token)) {
       isValidFlag(req.body.flag)
       .then((flag) => {
         if (flag.hasOwnProperty('flag_id')) {
@@ -119,8 +105,14 @@ module.exports = {
             return res.send({message: "Password already found"});
           } else {
             addFlagToUserCache(flag.flag_id, timeStamp.toUTCString());
-            persistAttemptToDb(flag.flag_id, timeStamp.toUTCString());
-            prepareResponse(res);
+            persistAttemptToDb(flag.flag_id, timeStamp.toUTCString())
+            .then((results) => {
+              prepareResponse(res);
+            })
+            .catch((err) => {
+              prepareResponse(res);
+            })
+            
           }
         } else {
           res.send({message: "Invalid Attempt"});
