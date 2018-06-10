@@ -63,3 +63,10 @@ li {
 .modal-btn {
     margin: 0 auto;
 }
+
+.flag1 {
+  background: rgba(46, 204, 113,0.8);
+}
+.flag0 {
+  background: rgba(231, 76, 60,0.8)
+}
