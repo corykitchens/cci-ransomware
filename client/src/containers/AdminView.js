@@ -39,12 +39,21 @@ class AdminView extends Component {
     };
 
     this.getRand = this.getRand.bind(this);
+    this.fetchData = this.fetchData.bind(this);
   }
 
+
+  fetchData() {
+    // 
+  }
+
+  componentDidMount() {
+    // this.intervalId = setInterval(this.fetchData, 1000);
+  }
+
+
   getRand() {
-    let num = Math.floor(Math.random() * Math.floor(2));
-    console.log(num);
-    return num;
+    return Math.floor(Math.random() * Math.floor(2));;
   }
 
   componentWillMount() {
@@ -61,6 +70,8 @@ class AdminView extends Component {
         'V': this.getRand(),
         'VI': this.getRand(),
       };
+      team.gameOver = 0;
+      team.isWinner = 0;
       teams.push(team);
       // this.setState({teams: this.state.teams.push(team)});
     }
@@ -84,6 +95,12 @@ class AdminView extends Component {
                   </td>
                 )
               })}
+              <td>
+                <strong>Game Over?</strong>
+              </td>
+              <td>
+                <strong>Winner?</strong>
+              </td>
             </tr>
           </thead>
           <tbody>
@@ -100,6 +117,12 @@ class AdminView extends Component {
                       </td>
                     )
                   })}
+                  <td>
+                    {team.gameOver}
+                  </td>
+                  <td>
+                    {team.isWinner}
+                  </td>
                 </tr>
               )
             })}
