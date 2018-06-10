@@ -24,13 +24,13 @@ class Main extends Component {
   }
 
   decrementClock() {
-    console.log('Calling child decrement');
     this.child.decrement();
   }
 
   gameCompleted() {
     this.setState({'gameOver': true});
     this.child.completeCountDown();
+    // this.child.zeroOutClock();
   }
 
   render() {
@@ -47,7 +47,7 @@ class Main extends Component {
             <CountdownClock ref={ instance => { this.child = instance; }}/>
             <div className="content has-text-centered">Unless 2 <i className="fab fa-bitcoin"></i> is received by haxxzor@tempmail.com</div>
             <ContentMessage message="To access admin functions: enter the following passwords:" />
-            <PasswordManager decrementClock={this.decrementClock} gameCompleted={this.gameCompleted} />
+            <PasswordManager decrementClock={this.decrementClock} gameCompleted={this.gameCompleted} gameOver={this.state.gameOver}/>
             </Card>
           </Column>
         </Columns>

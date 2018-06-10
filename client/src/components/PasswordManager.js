@@ -85,6 +85,12 @@ class PasswordManager extends Component {
       .catch(error => console.log(error));
 
       this.setState({ passwordAttempts: ++this.state.passwordAttempts});
+      if (this.props.gameOver) {
+        console.log('Game over');
+        this.setState({disableInput: true});
+      } else {
+        console.log('Game continue');
+      }
     }
 
     persistState() {
