@@ -17,19 +17,20 @@ class Main extends Component {
     this.state = {
       title: 'Ransomware',
       subtitle: 'Data deleted in:',
-      debug: true,
+      gameOver: false,
     }
     this.decrementClock = this.decrementClock.bind(this);
     this.gameCompleted = this.gameCompleted.bind(this);
   }
 
   decrementClock() {
-    console.log('Calling child decrement');
     this.child.decrement();
   }
 
   gameCompleted() {
+    this.setState({'gameOver': true});
     this.child.completeCountDown();
+    // this.child.zeroOutClock();
   }
 
   render() {
@@ -41,22 +42,12 @@ class Main extends Component {
         <Columns>
           <Column>
             <Card className="card-container">
-            {/* Ransomware Title */}
             <Title title={this.state.title} classes={'title has-text-danger has-text-centered'}/>
-            {/* End Ransomware Title */}
-            {/* Sub Title */}
             <Title title={this.state.subtitle} classes={'subtitle has-text-danger has-text-centered'} />
-            {/* End Sub Title */}
-            {/* Countdown Clock */}
             <CountdownClock ref={ instance => { this.child = instance; }}/>
-            {/* End Countdown Clock */}
-            {/* Ransom Message */}
             <div className="content has-text-centered">Unless 2 <i className="fab fa-bitcoin"></i> is received by haxxzor@tempmail.com</div>
-            {/* End Ransom Message */}
-            {/* Instruction Message */}
             <ContentMessage message="To access admin functions: enter the following passwords:" />
-            {/* End Instruction Message */}
-            <PasswordManager decrementClock={this.decrementClock} gameCompleted={this.gameCompleted} />
+            <PasswordManager decrementClock={this.decrementClock} gameCompleted={this.gameCompleted} gameOver={this.state.gameOver}/>
             </Card>
           </Column>
         </Columns>

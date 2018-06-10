@@ -13,6 +13,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(passport.initialize());
 app.use('/', routes);
-
+console.log(port);
 
 app.listen(port, () => winston.log(`Server running on port ${port}`));

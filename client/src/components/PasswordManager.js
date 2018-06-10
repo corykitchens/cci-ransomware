@@ -13,7 +13,8 @@ class PasswordManager extends Component {
           incorrectAttempts: 0,
           passwords: ['hello', 'password123', 'qwerty', 'letmein', 'abc123', 'mypassword'],
           foundFlags: [],
-          modalClasses: ''
+          modalClasses: '',
+          disableInput: false
         }
         this.attemptPassword = this.attemptPassword.bind(this);
         this.persistState = this.persistState.bind(this);
@@ -34,6 +35,11 @@ class PasswordManager extends Component {
       if (localStorage.getItem('correctAttempts')) {
         this.setState({correctAttempts: localStorage.getItem('correctAttempts')});
       }
+      if (localStorage.getItem('token')) {
+        this.setState({token: localStorage.getItem('token')});
+      } else {
+        this.setState({token: ''});
+      }
       this.state.foundFlags.forEach((e) => {
         let idx = this.state.passwords.indexOf(e);
         if (idx > -1) {
@@ -44,13 +50,14 @@ class PasswordManager extends Component {
     }
 
     wasAttemptSuccessfull(resp) {
-      if (resp.message === 'Attempt Successul') {
+      if (resp.message.indexOf('correct') !== -1) {
         this.setState({ correctAttempts: ++this.state.correctAttempts});
         this.persistState();
         this.setState({modalText: 'Correct!'});
         this.enableModal();
-        if (this.state.passwords.length === 0) {
+        if (resp.gameOver) {
           this.setState({modalText: 'Game Complete!'});
+          this.setState({disableInput: true});
           this.props.gameCompleted();
           this.enableModal();
         }
@@ -61,7 +68,6 @@ class PasswordManager extends Component {
         this.setState({modalText: 'Incorrect!'});
         this.enableModal();
       }
-
     }
     attemptPassword(data) {
       fetch('/api/flag', {
@@ -71,6 +77,7 @@ class PasswordManager extends Component {
         },
         body: JSON.stringify({
           flag: data,
+          token: this.state.token
         })
       })
       .then(resp => resp.json())
@@ -78,6 +85,12 @@ class PasswordManager extends Component {
       .catch(error => console.log(error));
 
       this.setState({ passwordAttempts: ++this.state.passwordAttempts});
+      if (this.props.gameOver) {
+        console.log('Game over');
+        this.setState({disableInput: true});
+      } else {
+        console.log('Game continue');
+      }
     }
 
     persistState() {
@@ -98,21 +111,17 @@ class PasswordManager extends Component {
         return (
             <Column>
                 <Columns>
-                    <PasswordInput placeholder="Attempt Password" attemptPassword={this.attemptPassword} />
+                    <PasswordInput placeholder="Attempt Password" attemptPassword={this.attemptPassword} disabled={this.state.disableInput}/>
                 </Columns>
                 {/* Debug Mode */}
                 <Columns>
                   <Column>
-                    <div className="content debug-container">
-                      <h2>Debug Mode</h2>
+                    <div className="content">
                       <div className="content">
                         <table className="table">
                           <thead>
                             <tr>
-                              <td>Password Attempts</td>
-                              <td>Correct Attempts</td>
-                              <td>Incorrect Attempts</td>
-                              <td>Passwords</td>
+                              <td>Flag Attempts</td>
                               <td>Found Flags</td>
                             </tr>
                           </thead>
@@ -120,9 +129,6 @@ class PasswordManager extends Component {
                             <tr>
                               <td>{this.state.passwordAttempts}</td>
                               <td>{this.state.correctAttempts}</td>
-                              <td>{this.state.incorrectAttempts}</td>
-                              <td>{this.state.passwords.join(',')}</td>
-                              <td>{this.state.foundFlags.join(',')}</td>
                             </tr>
                           </tbody>
                         </table>

@@ -42,13 +42,17 @@ class CountdownClock extends Component {
   }*/
 
   decrementTime(amount = 1, t = 'seconds') {
-    let current = moment('2018-06-23' + ' ' + this.state.currentTime);
-    this.checkIfCountdownCompleted(current);
+    if (!this.state.countdownComplete) {
+      let current = moment('2018-06-23' + ' ' + this.state.currentTime);
+      this.checkIfCountdownCompleted(current);
 
-    let diminishedTime = current.subtract(amount, t);
-    this.setState({currentTime: moment(diminishedTime).format('H:mm:ss')});
-    current = moment('2018-06-23' + ' ' + this.state.currentTime);
-    localStorage.setItem('current', current);
+      let diminishedTime = current.subtract(amount, t);
+      this.setState({currentTime: moment(diminishedTime).format('H:mm:ss')});
+      current = moment('2018-06-23' + ' ' + this.state.currentTime);
+      localStorage.setItem('current', current);
+    } else {
+      this.setState({currentTime: 'GAME OVER'});
+    }
   }
 
   decrement() {
@@ -85,6 +89,7 @@ class CountdownClock extends Component {
   completeCountDown() {
     clearInterval(this.intervalId);
     this.setState({countdownComplete: true});
+    this.decrementTime();
   }
 
   render() {

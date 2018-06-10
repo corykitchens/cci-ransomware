@@ -16,6 +16,8 @@ module.exports = (passport) => {
         } else {
           return cb('Invalid credentials', null);
         }
+      } else {
+        return cb('Invalid credentials', null);
       }
     })
     .catch((err) => {
