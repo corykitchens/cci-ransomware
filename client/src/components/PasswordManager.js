@@ -13,7 +13,8 @@ class PasswordManager extends Component {
           incorrectAttempts: 0,
           passwords: ['hello', 'password123', 'qwerty', 'letmein', 'abc123', 'mypassword'],
           foundFlags: [],
-          modalClasses: ''
+          modalClasses: '',
+          disableInput: false
         }
         this.attemptPassword = this.attemptPassword.bind(this);
         this.persistState = this.persistState.bind(this);
@@ -56,6 +57,7 @@ class PasswordManager extends Component {
         this.enableModal();
         if (resp.gameOver) {
           this.setState({modalText: 'Game Complete!'});
+          this.setState({disableInput: true});
           this.props.gameCompleted();
           this.enableModal();
         }
@@ -66,7 +68,6 @@ class PasswordManager extends Component {
         this.setState({modalText: 'Incorrect!'});
         this.enableModal();
       }
-
     }
     attemptPassword(data) {
       fetch('/api/flag', {
@@ -104,7 +105,7 @@ class PasswordManager extends Component {
         return (
             <Column>
                 <Columns>
-                    <PasswordInput placeholder="Attempt Password" attemptPassword={this.attemptPassword} />
+                    <PasswordInput placeholder="Attempt Password" attemptPassword={this.attemptPassword} disabled={this.state.disableInput}/>
                 </Columns>
                 {/* Debug Mode */}
                 <Columns>

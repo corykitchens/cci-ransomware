@@ -17,7 +17,7 @@ class Main extends Component {
     this.state = {
       title: 'Ransomware',
       subtitle: 'Data deleted in:',
-      debug: true,
+      gameOver: false,
     }
     this.decrementClock = this.decrementClock.bind(this);
     this.gameCompleted = this.gameCompleted.bind(this);
@@ -29,6 +29,7 @@ class Main extends Component {
   }
 
   gameCompleted() {
+    this.setState({'gameOver': true});
     this.child.completeCountDown();
   }
 
@@ -56,6 +57,7 @@ class Main extends Component {
             {/* Instruction Message */}
             <ContentMessage message="To access admin functions: enter the following passwords:" />
             {/* End Instruction Message */}
+            {/*<PasswordManager decrementClock={this.decrementClock} gameCompleted={this.gameCompleted} disableInput={this.gameComplete}/>*/}
             <PasswordManager decrementClock={this.decrementClock} gameCompleted={this.gameCompleted} />
             </Card>
           </Column>

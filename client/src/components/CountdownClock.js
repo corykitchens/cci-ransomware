@@ -85,6 +85,7 @@ class CountdownClock extends Component {
   completeCountDown() {
     clearInterval(this.intervalId);
     this.setState({countdownComplete: true});
+    
   }
 
   render() {
