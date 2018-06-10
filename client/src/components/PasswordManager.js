@@ -34,6 +34,11 @@ class PasswordManager extends Component {
       if (localStorage.getItem('correctAttempts')) {
         this.setState({correctAttempts: localStorage.getItem('correctAttempts')});
       }
+      if (localStorage.getItem('token')) {
+        this.setState({token: localStorage.getItem('token')});
+      } else {
+        this.setState({token: ''});
+      }
       this.state.foundFlags.forEach((e) => {
         let idx = this.state.passwords.indexOf(e);
         if (idx > -1) {
@@ -71,6 +76,7 @@ class PasswordManager extends Component {
         },
         body: JSON.stringify({
           flag: data,
+          token: this.state.token
         })
       })
       .then(resp => resp.json())

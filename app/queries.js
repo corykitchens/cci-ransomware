@@ -16,5 +16,14 @@ module.exports = {
                  join flag on team_flag.flag_id = flag.flag_id \
                  WHERE team.team_id = $1',
 
-  auth: 'select team_id, name, password from team where name=$1'
+  getTeamFlagCount: 'select distinct count(team.team_id) from team \
+                 join team_flag on team.team_id = team_flag.team_id \
+                 join flag on team_flag.flag_id = flag.flag_id \
+                 WHERE team.team_id = $1',
+
+  getMaxFlagCount: 'select count(flag.flag_id) from flag',
+
+  auth: 'select team_id, name, password from team where name=$1',
+
+  insertFoundFlag: 'insert into team_flag values ($1, $2, $3)'
 }
