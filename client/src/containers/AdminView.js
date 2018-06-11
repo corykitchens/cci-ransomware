@@ -42,13 +42,24 @@ class AdminView extends Component {
     this.fetchData = this.fetchData.bind(this);
   }
 
-
   fetchData() {
-    // 
+    fetch('/api/contests/1', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(resp => resp.json())
+    .then(teams => {
+      this.setState({teams: teams});
+    })
+    .catch(err => {
+      console.log(err);
+    });
   }
 
   componentDidMount() {
-    // this.intervalId = setInterval(this.fetchData, 1000);
+    this.intervalId = setInterval(this.fetchData, 1000);
   }
 
 
@@ -57,25 +68,7 @@ class AdminView extends Component {
   }
 
   componentWillMount() {
-    let teams = [];
-    for (let i = 0; i < 20; i++) {
-      let team = {};
-      team.id = i+1;
-      team.name = 'Team ' + (i+1);
-      team.flags = {
-        'I': this.getRand(),
-        'II': this.getRand(),
-        'III': this.getRand(),
-        'IV': this.getRand(),
-        'V': this.getRand(),
-        'VI': this.getRand(),
-      };
-      team.gameOver = 0;
-      team.isWinner = 0;
-      teams.push(team);
-      // this.setState({teams: this.state.teams.push(team)});
-    }
-    this.setState({teams: teams});
+    this.fetchData();
   }
 
   render() {

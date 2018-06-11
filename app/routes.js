@@ -4,9 +4,9 @@ const controller = require('./controller.js');
 const passport = require('passport');
 
 // Login Route
-router.post('auth', passport.authenticate('local'), controller.auth);
+router.post('/auth', passport.authenticate('local'), controller.auth);
 // Attempt a Password
-router.put('flag', controller.attemptFlag)
+router.put('/flag', controller.attemptFlag)
 // Admin
 router.get('/contests/:contestId', controller.getContestById);
 

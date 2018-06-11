@@ -105,11 +105,22 @@ module.exports = {
     .then(results => res.status(200).send(results.rows))
     .catch(err => res.send(err));
   },
+
   getContestById: (req, res) => {
     const data = contestCache;
     if (!contestCache.teams.length || !contestCache.flags.length) {
       instantiateTeamCache()
       .then((teams) => {
+        teams.forEach((team) => {
+          team.flags = {
+            '1': 0,
+            '2': 0,
+            '3': 0,
+            '4': 0,
+            '5': 0,
+            '6': 0,
+          };
+        });
         contestCache.teams = teams;
         return instantiateFlagCache();
       })
@@ -118,9 +129,25 @@ module.exports = {
         return instantiateTeamFlags();
       })
       .then((flagsByTeam) => {
-        res.send(flagsByTeam);
+        contestCache.teamFlags = flagsByTeam;
+        flagsByTeam.forEach((flag) => {
+          contestCache.teams[flag.team_id-1].flags[flag.flag_id] = 1;
+        });
+        res.send(contestCache.teams);
       })
       .catch((err) => res.send(err));
+    } else {
+      instantiateTeamFlags()
+      .then((flagsByTeam) => {
+        contestCache.teamFlags = flagsByTeam;
+        flagsByTeam.forEach((flag) => {
+          contestCache.teams[flag.team_id-1].flags[flag.flag_id] = 1;
+        });
+        res.send(contestCache.teams);
+      })
+      .catch((err) => {
+        res.send(err);
+      })
     }
   },
 
