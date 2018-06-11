@@ -25,5 +25,17 @@ module.exports = {
 
   auth: 'select team_id, name, password from team where name=$1',
 
-  insertFoundFlag: 'insert into team_flag values ($1, $2, $3)'
+  insertFoundFlag: 'insert into team_flag values ($1, $2, $3)',
+
+  getTeamsByContest: 'select team.team_id, team.name from team \
+                      inner join contest_team on team.team_id = contest_team.team_id \
+                      where contest_team.contest_id = $1;',
+  
+  getFlagsByContest: 'select flag.flag_id, value from flag \
+                      inner join contest_flag on contest_flag.flag_id = flag.flag_id \
+                      where contest_flag.contest_id = $1;',
+
+  flagsByTeam: 'select distinct * from team_flag \
+                inner join contest_team on contest_team.team_id = team_flag.team_id \
+                where contest_team.contest_id = $1;'
 }

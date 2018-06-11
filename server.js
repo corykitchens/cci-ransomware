@@ -9,10 +9,15 @@ const port = process.env.PORT || 5000;
 
 require('./config/passport.js')(passport);
 
+app.use(express.static(__dirname + '/client/build/'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(passport.initialize());
-app.use('/', routes);
-console.log(port);
+
+app.use('/api/', routes);
+
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/client/build/');
+});
 
 app.listen(port, () => winston.log(`Server running on port ${port}`));
