@@ -9,6 +9,14 @@ const userCache = {
   maxFlag: 6,
 };
 
+const contestCache = {
+  contest_id: 1,
+  teams: [],
+  flags: [],
+  winner_id: null
+};
+
+
 const tokenIsValid = (givenToken) => {
   if (givenToken && userCache.hasOwnProperty('token')) {
     return givenToken === userCache['token'];
@@ -38,6 +46,26 @@ async function isGameOver() {
   const results = await query(queries.getTeamFlagCount, [userCache.team_id])
   return results.rows[0].count == userCache.maxFlag;
 };
+
+async function instantiateTeamCache(contest_id = 1) {
+  const results = await query(queries.getTeamsByContest, [contest_id]);
+  return results.rows;
+}
+
+async function instantiateFlagCache(contest_id = 1) {
+  const results = await query(queries.getFlagsByContest, [contest_id]);
+  return results.rows;
+}
+
+async function getTeamsFlags(team_id) {
+  const results = await query(queries.getTeamsFlags, [team_id]);
+  return results.rows;
+}
+
+async function instantiateTeamFlags() {
+  const results = await query(queries.flagsByTeam, [contestCache.contest_id])
+  return results.rows;
+}
 
 const prepareResponse = (res) => {
   isGameOver()
@@ -78,9 +106,22 @@ module.exports = {
     .catch(err => res.send(err));
   },
   getContestById: (req, res) => {
-    query(queries.getContestById, [req.params.contestId])
-    .then(results => res.status(200).send(results.rows[0]))
-    .catch(err => res.send(err));
+    const data = contestCache;
+    if (!contestCache.teams.length || !contestCache.flags.length) {
+      instantiateTeamCache()
+      .then((teams) => {
+        contestCache.teams = teams;
+        return instantiateFlagCache();
+      })
+      .then((flags) => {
+        contestCache.flags = flags;
+        return instantiateTeamFlags();
+      })
+      .then((flagsByTeam) => {
+        res.send(flagsByTeam);
+      })
+      .catch((err) => res.send(err));
+    }
   },
 
   endGameLoop: (req, res) => {
