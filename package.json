@@ -6,7 +6,9 @@
   "scripts": {
     "server": "node server.js",
     "client": "cd client && yarn start",
-    "dev": "./node_modules/.bin/concurrently \"yarn server\" \"yarn client\""
+    "dev": "./node_modules/.bin/concurrently \"yarn server\" \"yarn client\"",
+    "heroku-postbuild": "cd client && yarn && yarn run build",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
