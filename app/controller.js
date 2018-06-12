@@ -4,8 +4,6 @@ const jwt = require('jsonwebtoken');
 
 
 const userCache = {
-  team_id: null,
-  flagsFound: {},
   maxFlag: 6,
 };
 
@@ -18,12 +16,8 @@ const contestCache = {
 
 
 const tokenIsValid = (givenToken) => {
-  if (givenToken && userCache.hasOwnProperty('token')) {
-    return givenToken === userCache['token'];
-  } else {
-    return false;
-  }
-};
+  return userCache.hasOwnProperty(givenToken);
+}
 
 async function isValidFlag (flag_id) {
   const results = await query(queries.attemptFlag, [flag_id]);
@@ -33,17 +27,18 @@ async function isValidFlag (flag_id) {
   return {};
 };
 
-const addFlagToUserCache = (flag_id, timeStamp) => {
-  userCache.flagsFound[flag_id] = timeStamp;
+const addFlagToUserCache = (flag_id, token, timeStamp) => {
+  userCache[token].flagsFound[flag_id] = timeStamp;
+  console.log(userCache);
 };
 
-async function persistAttemptToDb(flag_id, timeStamp) {
-  const results = await query(queries.insertFoundFlag, [userCache['team_id'], flag_id, timeStamp]);
+async function persistAttemptToDb(flag_id, token, timeStamp) {
+  const results = await query(queries.insertFoundFlag, [userCache[token]['team_id'], flag_id, timeStamp]);
   return results;
 };
 
-async function isGameOver() {
-  const results = await query(queries.getTeamFlagCount, [userCache.team_id])
+async function isGameOver(token) {
+  const results = await query(queries.getTeamFlagCount, [userCache[token].team_id])
   return results.rows[0].count == userCache.maxFlag;
 };
 
@@ -67,8 +62,8 @@ async function instantiateTeamFlags() {
   return results.rows;
 }
 
-const prepareResponse = (res) => {
-  isGameOver()
+const prepareResponse = (res, token) => {
+  isGameOver(token)
   .then((results) => {
     return res.send({message: "correct", gameOver: results});
   })
@@ -86,7 +81,8 @@ module.exports = {
   auth: (req, res) => {
     const { user } = req;
     if (user) {
-      userCache['team_id'] = user.team_id;
+      // userCache[user.team_id] = user;
+      // userCache['team_id'] = user.team_id;
       let expire_date = new Date();
       expire_date.setDate(expire_date.getDate() + 7);
       const token = jwt.sign({
@@ -94,8 +90,10 @@ module.exports = {
         name: user.team,
         exp: parseInt(expire_date.getTime() / 1000)
       }, "Polygondwanaland");
-      userCache['token'] = token;
-      return res.status(200).json({token});
+      // userCache[user.team_id]['token'] = token;
+      userCache[token] = user;
+      userCache[token].flagsFound = {};
+      return res.status(200).json({token: token, team_id: user.team_id});
     } else {
       return res.status(401).json({error: 'Bad Request'});
     }
@@ -155,9 +153,7 @@ module.exports = {
     res.send({game_complete: true});
   },
 
-  tokenIsValid: (givenToken) => {
-    return givenToken === userCache['token'];
-  },
+
 
   failedToken: (req, res) => {
     return res.status(401).json({message: 'Invalid Token'});
@@ -169,16 +165,16 @@ module.exports = {
       isValidFlag(req.body.flag)
       .then((flag) => {
         if (flag.hasOwnProperty('flag_id')) {
-          if (userCache.flagsFound[flag.flag_id]) {
+          if (userCache[req.body.token].flagsFound[flag.flag_id]) {
             return res.send({message: "Password already found"});
           } else {
-            addFlagToUserCache(flag.flag_id, timeStamp.toUTCString());
-            persistAttemptToDb(flag.flag_id, timeStamp.toUTCString())
+            addFlagToUserCache(flag.flag_id, req.body.token, timeStamp.toUTCString());
+            persistAttemptToDb(flag.flag_id, req.body.token, timeStamp.toUTCString())
             .then((results) => {
-              prepareResponse(res);
+              prepareResponse(res, req.body.token);
             })
             .catch((err) => {
-              prepareResponse(res);
+              prepareResponse(res, req.body.token);
             })
             
           }
