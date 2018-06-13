@@ -1,14 +1,11 @@
 # CCI-Ransomware Game
 
 ### Requirements
-- NodeJS version >= 8 LTS
-- NPM
-- Yarn
+- NodeJS version >= 8 LTS && NPM (https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-up-node-on-ec2-instance.html)
+- Yarn (via npm install -g yarn)
 - PostgreSQL
 
-
 ### Installation
-
 1. Clone the respository and cd into the directory
 ```sh
 $ https://github.com/corykitchens/cci-ransomware.git && cd cci-ransomware/
@@ -18,29 +15,41 @@ $ https://github.com/corykitchens/cci-ransomware.git && cd cci-ransomware/
 ```sh
 cci-ransomware $] npm install
 cci-ransomware $] cd client/
-cci-ransomware $] npm install
+client $] npm install
 ```
-3. Create your .ENV file containing the following environment variables
+
+3. Run Yarn build to ready the client-side code for production
 ```sh
-touch .env
+client $] yarn build
 ```
+3. Change back to the project root directory. And create your .ENV file containing the following environment variables
+(Note this could also be done with Parameter Store)
 ```sh
-PORT=80 for prod, anything else for dev
-PGHOST='localhost'
+cci-ransomware $] touch .env
+```
+4. Example .ENV file
+```sh
+PGHOST=yourpghostname or localhost
 PGUSER=`yourusername`
 PGDATABASE=`yourdatabasename`
 PGPASSWORD=`yourpassword`
 PGPORT=5432
 ```
-4. Create the tables and initial data for the database
-Run the schema.sql against the database to create the tables/initial data
+5. Execute the `db/schema.sql` to build the tables and initial mock data.
+Execute via `pgAdmin` or via pg shell
 
-5. Install Yarn globally to run scripts
+6. Run the server
 ```sh
-cci-ransomware $] npm install -g yarn
-````
+cci-ransomware $] npm start
+```
 
-### TODO
-- create-react-app build
-- Use nginx to proxy port 80 requests to port 5000/NodeJS?
-- Express to serve client/index.html with build version
+### Note
+In order to run a Node process that listens to lower ports e.g. `80`. You will need to either run it through a proxy, forward ports, or run as sudo.
+https://stackoverflow.com/a/13978983
+
+### Forward Ports
+```sh
+sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 5000
+```
+
+
