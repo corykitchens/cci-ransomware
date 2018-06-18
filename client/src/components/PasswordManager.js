@@ -77,7 +77,8 @@ class PasswordManager extends Component {
         },
         body: JSON.stringify({
           flag: data,
-          token: this.state.token
+          token: this.state.token,
+          currentTime: localStorage.getItem('current')
         })
       })
       .then(resp => resp.json())

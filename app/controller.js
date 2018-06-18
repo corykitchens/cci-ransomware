@@ -19,6 +19,10 @@ const tokenIsValid = (givenToken) => {
   return userCache.hasOwnProperty(givenToken);
 }
 
+const setUserAsWinner = (token) => {
+  userCache[token].winner = true;
+}
+
 async function isValidFlag (flag_id) {
   const results = await query(queries.attemptFlag, [flag_id]);
   if (results.rows.length > 0) {
@@ -27,9 +31,9 @@ async function isValidFlag (flag_id) {
   return {};
 };
 
-const addFlagToUserCache = (flag_id, token, timeStamp) => {
+const addFlagToUserCache = (flag_id, token, timeStamp, currentTime) => {
   userCache[token].flagsFound[flag_id] = timeStamp;
-  console.log(userCache);
+  userCache[token].lastTimeEvent = currentTime;
 };
 
 async function persistAttemptToDb(flag_id, token, timeStamp) {
@@ -65,6 +69,9 @@ async function instantiateTeamFlags() {
 const prepareResponse = (res, token) => {
   isGameOver(token)
   .then((results) => {
+    if (results) {
+      setUserAsWinner(token);
+    }
     return res.send({message: "correct", gameOver: results});
   })
   .catch((err) => {
@@ -156,28 +163,31 @@ module.exports = {
     res.send({game_complete: true});
   },
 
-
-
   failedToken: (req, res) => {
     return res.status(401).json({message: 'Invalid Token'});
   },
 
   attemptFlag: (req, res) => {
+    /*
+    * TODO
+    * Refactor 
+    */
+    const { flag, token, currentTime } = req.body;
     let timeStamp = new Date();
-    if (tokenIsValid(req.body.token)) {
-      isValidFlag(req.body.flag)
+    if (tokenIsValid(token)) {
+      isValidFlag(flag)
       .then((flag) => {
         if (flag.hasOwnProperty('flag_id')) {
-          if (userCache[req.body.token].flagsFound[flag.flag_id]) {
+          if (userCache[token].flagsFound[flag.flag_id]) {
             return res.send({message: "Password already found"});
           } else {
-            addFlagToUserCache(flag.flag_id, req.body.token, timeStamp.toUTCString());
-            persistAttemptToDb(flag.flag_id, req.body.token, timeStamp.toUTCString())
+            addFlagToUserCache(flag.flag_id, token, timeStamp.toUTCString(), currentTime);
+            persistAttemptToDb(flag.flag_id, token, timeStamp.toUTCString())
             .then((results) => {
-              prepareResponse(res, req.body.token);
+              prepareResponse(res, token);
             })
             .catch((err) => {
-              prepareResponse(res, req.body.token);
+              prepareResponse(res, token);
             })
             
           }
