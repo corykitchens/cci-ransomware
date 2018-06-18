@@ -63,7 +63,8 @@ class Login extends Component {
     this.setState({modalClasses: ''});
   }
 
-  auth() {
+  auth(e) {
+    e.preventDefault();
     fetch('/api/auth', {
       method: 'POST',
       headers: {

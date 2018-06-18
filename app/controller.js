@@ -117,10 +117,12 @@ module.exports = {
   getContestById: (req, res) => {
     //TODO
     //Refactor
+    //Alot of this is undeeded
     if (!contestCache.teams.length || !contestCache.flags.length) {
       instantiateTeamCache()
       .then((teams) => {
         teams.forEach((team) => {
+          // TODO - Find better way to set keys dynamically
           team.flags = {
             '1': 0,
             '2': 0,
