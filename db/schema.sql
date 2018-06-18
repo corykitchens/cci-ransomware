@@ -15,7 +15,8 @@ create table public.flag (
 create table public.team (
   team_id int not null,
   name  varchar(100) not null,
-  password varchar(100)
+  password varchar(100),
+  admin boolean not null default false
 );
 
 create table public.contest_flag (
@@ -82,32 +83,6 @@ references public.flag (flag_id);
 insert into public.contest
   values (1, '2018-06-24');
 
--- Create Teams
-insert into public.team
-  values (1, 'teama', 'teama');
-
-insert into public.team
-  values (2, 'teamb', 'teamb');
-
-insert into public.team
-  values (3, 'teamc', 'teamc');
-
-insert into public.team
-  values (4, 'teamd', 'teamd');
-
--- Create Flags
-insert into public.flag
-  values (1, 'hello');
-insert into public.flag
-  values (2, 'password123');
-insert into public.flag
-  values (3, 'qwerty');
-insert into public.flag
-  values (4, 'letmein');
-insert into public.flag
-  values (5, 'abc123');
-insert into public.flag
-  values (6, 'mypassword');
 
 -- Assign the Flags to the Contest
 insert into public.contest_flag(contest_id, flag_id)
@@ -123,35 +98,3 @@ insert into public.contest_flag(contest_id, flag_id)
 insert into public.contest_flag(contest_id, flag_id)
   values (1, 6);
 
--- Assign Teams to the Contest
-insert into public.contest_team(contest_id, team_id)
-  values(1, 1);
-insert into public.contest_team(contest_id, team_id)
-  values(1, 2);
-insert into public.contest_team(contest_id, team_id)
-  values(1, 3);
-insert into public.contest_team(contest_id, team_id)
-  values(1, 4);
-
-
--- Set Team B to find 1 flags
-insert into public.team_flag(team_id, flag_id, attempt)
-  values(2, 1, TIMESTAMP '2018-06-24 15:36:38');
--- Set Team C to find 3 flags
-insert into public.team_flag(team_id, flag_id, attempt)
-  values(3, 1, TIMESTAMP '2018-06-24 12:36:38');
-insert into public.team_flag(team_id, flag_id, attempt)
-  values(3, 2, TIMESTAMP '2018-06-24 13:36:38');
-insert into public.team_flag(team_id, flag_id, attempt)
-  values(3, 3, TIMESTAMP '2018-06-24 14:36:38');
--- Set Team D to find 5 flags
-insert into public.team_flag(team_id, flag_id, attempt)
-  values(4, 1, TIMESTAMP '2018-06-24 12:36:38');
-insert into public.team_flag(team_id, flag_id, attempt)
-  values(4, 2, TIMESTAMP '2018-06-24 13:36:38');
-insert into public.team_flag(team_id, flag_id, attempt)
-  values(4, 3, TIMESTAMP '2018-06-24 14:36:38');
-insert into public.team_flag(team_id, flag_id, attempt)
-  values(4, 4, TIMESTAMP '2018-06-24 15:36:38');
-insert into public.team_flag(team_id, flag_id, attempt)
-  values(4, 5, TIMESTAMP '2018-06-24 16:36:38');
