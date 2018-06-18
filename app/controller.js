@@ -68,11 +68,11 @@ async function instantiateTeamFlags() {
 
 const prepareResponse = (res, token) => {
   isGameOver(token)
-  .then((results) => {
-    if (results) {
+  .then((gameOver) => {
+    if (gameOver) {
       setUserAsWinner(token);
     }
-    return res.send({message: "correct", gameOver: results});
+    return res.send({message: "correct", gameOver: gameOver});
   })
   .catch((err) => {
     return res.send({message: "correct", gameOver: err});
@@ -115,6 +115,8 @@ module.exports = {
   },
 
   getContestById: (req, res) => {
+    //TODO
+    //Refactor
     const data = contestCache;
     if (!contestCache.teams.length || !contestCache.flags.length) {
       instantiateTeamCache()
