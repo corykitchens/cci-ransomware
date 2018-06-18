@@ -1,9 +1,9 @@
-const { Client, Pool } = require('pg');
+const { Client } = require('pg');
 
 async function getClient() {
-  const pool = new Pool();
-  await pool.connect();
-  return pool;
+  const client = new Client();
+  await client.connect();
+  return client;
 }
 
 async function query(text, values) {
