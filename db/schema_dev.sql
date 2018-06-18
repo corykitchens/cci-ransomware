@@ -81,20 +81,66 @@ references public.flag (flag_id);
 
 -- Create Contest
 insert into public.contest
-  values (1, '2018-06-24');
+values (1, '2018-06-24');
+
+-- 
+-- Create Passwords
+-- 
+insert into public.flag
+values (1, 'hello');
+insert into public.flag
+values (2, 'password123');
+insert into public.flag
+values (3, 'helloworld');
+insert into public.flag
+values (4, 'letmein');
+insert into public.flag
+values (5, 'abc123');
+insert into public.flag
+values (6, 'mypassword');
+
+-- 
+-- Create Teams
+-- 
+insert into public.team(team_id, name, password)
+values (1, 'team1', 'team1');
+insert into public.team(team_id, name, password)
+values (2, 'team2', 'team2');
+insert into public.team(team_id, name, password)
+values (3, 'team3', 'team3');
+insert into public.team(team_id, name, password)
+values (4, 'team4', 'team4');
+insert into public.team(team_id, name, password, admin)
+values(5, 'admin', 'admin', '1');
 
 
+-- 
+-- Assign Teams to the Contest
+-- 
+insert into public.contest_team(contest_id, team_id)
+values(1, 1);
+insert into public.contest_team(contest_id, team_id)
+values(1, 2);
+insert into public.contest_team(contest_id, team_id)
+values(1, 3);
+insert into public.contest_team(contest_id, team_id)
+values(1, 4);
+insert into public.contest_team(contest_id, team_id)
+values(1, 5);
+
+-- 
 -- Assign the Flags to the Contest
+-- 
 insert into public.contest_flag(contest_id, flag_id)
-  values (1, 1);
+values (1, 1);
 insert into public.contest_flag(contest_id, flag_id)
-  values (1, 2);
+values (1, 2);
 insert into public.contest_flag(contest_id, flag_id)
-  values (1, 3);
+values (1, 3);
 insert into public.contest_flag(contest_id, flag_id)
-  values (1, 4);
+values (1, 4);
 insert into public.contest_flag(contest_id, flag_id)
-  values (1, 5);
+values (1, 5);
 insert into public.contest_flag(contest_id, flag_id)
-  values (1, 6);
+values (1, 6);
 
