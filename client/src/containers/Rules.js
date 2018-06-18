@@ -21,7 +21,7 @@ const Rules = (props) => {
           <Title title="Ransomware" classes={'title has-text-danger has-text-centered'}/>
           <Title title="Rules" classes={'subtitle has-text-danger has-text-centered'} />
             <div className="column is-half is-offset-one-quarter">
-            <h4 className="subtitle">I HAVE TAKEN CONTROL OF ALL PAIENT FILES.</h4>
+            <h4 className="subtitle">I HAVE TAKEN CONTROL OF ALL PATIENT FILES.</h4>
             
             <h4 className="subtitle">YOU HAVE 5 HOURS TO SEND 10 BITCOIN TO THE FOLLOWING ACCOUNT: 1D1HkwCHJvMzhWhZWUQtivprhJDpMwQWWR. </h4>
 
@@ -35,7 +35,7 @@ const Rules = (props) => {
             <h4 className="subtitle">IF YOU TRY TO STOP IT YOURSELF THE CLOCK WILL SPEED UP. </h4>
 
               <ul className="rules-list">
-                <li>You must find 5 hidden passwords</li>
+                <li>You must find 6 hidden passwords</li>
                 <li>You are given 5 hours to find all 6 passwords</li>
                 <li>The time limit is 5 hours</li>
                 <li>For each incorrect attempt, 15 minutes will be decremented from the time</li>
