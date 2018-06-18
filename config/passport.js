@@ -12,7 +12,7 @@ module.exports = (passport) => {
         //Use bcrpt.compare
         //Dont store password as plaintext
         if (team.password === password) {
-          return cb(null, results.rows[0]);
+          return cb(null, team);
         } else {
           return cb('Invalid credentials', null);
         }

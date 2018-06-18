@@ -1,19 +1,19 @@
 const queries = require('./queries.js');
 const { query } = require('../db');
 const jwt = require('jsonwebtoken');
+const userCache = require('../config/cache/user.js');
+const contestCache = require('../config/cache/contest.js');
 
 
-const userCache = {
-  maxFlag: 6,
-};
-
-const contestCache = {
-  contest_id: 1,
-  teams: [],
-  flags: [],
-  winner_id: null
-};
-
+const resetCache = () => {
+  userCache = {};
+  userCache.maxFlag = 6;
+  contestCache = {};
+  contestCache.contest_id = 1;
+  contest.teams = [];
+  contest.flags = [];
+  contest.winner_id = null;
+}
 
 const tokenIsValid = (givenToken) => {
   return userCache.hasOwnProperty(givenToken);
@@ -81,8 +81,6 @@ module.exports = {
   auth: (req, res) => {
     const { user } = req;
     if (user) {
-      // userCache[user.team_id] = user;
-      // userCache['team_id'] = user.team_id;
       let expire_date = new Date();
       expire_date.setDate(expire_date.getDate() + 7);
       const token = jwt.sign({
@@ -93,7 +91,11 @@ module.exports = {
       // userCache[user.team_id]['token'] = token;
       userCache[token] = user;
       userCache[token].flagsFound = {};
-      return res.status(200).json({token: token, team_id: user.team_id});
+      if (user.admin) {
+        return res.status(200).json({token: token, team_id: user.team_id, isAdmin: user.admin});
+      } else {
+        return res.status(200).json({token: token, team_id: user.team_id });
+      }
     } else {
       return res.status(401).json({error: 'Bad Request'});
     }
@@ -186,5 +188,10 @@ module.exports = {
     } else {
       res.status(401).send({message: "Error Token Not Found"});
     }
+  },
+
+  resetContest: (req, res) => {
+    resetCache();
+    //delete the found flags
   }
 }

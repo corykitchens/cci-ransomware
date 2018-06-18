@@ -23,7 +23,7 @@ module.exports = {
 
   getMaxFlagCount: 'select count(flag.flag_id) from flag',
 
-  auth: 'select team_id, name, password from team where name=$1',
+  auth: 'select team_id, name, password, admin from team where name=$1',
 
   insertFoundFlag: 'insert into team_flag values ($1, $2, $3)',
 
@@ -37,5 +37,10 @@ module.exports = {
 
   flagsByTeam: 'select distinct * from team_flag \
                 inner join contest_team on contest_team.team_id = team_flag.team_id \
-                where contest_team.contest_id = $1;'
+                where contest_team.contest_id = $1;',
+
+  deleteFoundFlagsInContest: 'delete from team_flag \
+                              where team_flag.flag_id in \
+                              (select flag_id from contest_flag \
+                              where contest_flag.contest_id = $1)'
 }

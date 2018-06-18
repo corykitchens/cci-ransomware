@@ -3,6 +3,8 @@ const router = express.Router();
 const controller = require('./controller.js');
 const passport = require('passport');
 
+
+router.get('/', (req, res) => res.status(200).json({message: 'CCI-Ransomware API'}));
 // Login Route
 router.post('/auth', passport.authenticate('local'), controller.auth);
 // Attempt a Password
