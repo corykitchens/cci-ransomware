@@ -69,6 +69,7 @@ class AdminView extends Component {
 
   setTableSchema() {
     let cols = this.state.contest.flags.map(flag => flag.key);
+    cols.unshift('Flags');
     cols.push('Time Remaining');
     cols.push('Game Over?');
     cols.push('Winner?');
@@ -104,6 +105,9 @@ class AdminView extends Component {
               <Card className="card-container">
                 <Title title={this.state.title} classes={'title has-text-danger has-text-centered'}/>
                 {this.props.isAdmin}
+                {/*
+                  <Table cols=this.state.cols rows=this.state.rows />
+                */}
                 <table className="table table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
                   <thead>
                     <tr>
@@ -126,10 +130,13 @@ class AdminView extends Component {
                           {Object.keys(team.flags).map((k) => {
                             return (
                               <td className={["flag", team.flags[k]].join('')}>
-                                {k}
+
                               </td>
                             )
                           })}
+                          <td>
+                            {team.timeRemaining}
+                          </td>
                           <td>
                             {team.gameOver}
                           </td>
@@ -142,6 +149,7 @@ class AdminView extends Component {
                   </tbody>
                 </table>
               </Card>
+
             </Column>
           </Columns>
         </Container>
