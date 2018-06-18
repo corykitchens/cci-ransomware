@@ -29,6 +29,18 @@ class Login extends Component {
     this.disableModal = this.disableModal.bind(this);
   }
 
+  componentWillMount() {
+    let token = localStorage.getItem('token');
+    let isAdmin = localStorage.getItem('isAdmin');
+    if (isAdmin && token) {
+      this.setState({isAdmin: true});
+      this.setState({authenticated: true});
+    } 
+    else if (token) {
+      this.setState({authenticated: true});
+    }
+  }
+
   handleUsernameChange(e) {
     this.setState({username: e.target.value});
   }
