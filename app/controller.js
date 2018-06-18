@@ -80,6 +80,7 @@ module.exports = {
 
   auth: (req, res) => {
     const { user } = req;
+    
     if (user) {
       let expire_date = new Date();
       expire_date.setDate(expire_date.getDate() + 7);
