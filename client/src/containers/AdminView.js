@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import Container from '../components/Container';
 import Column from '../components/Column';
 import Columns from '../components/Columns';
@@ -88,7 +89,14 @@ class AdminView extends Component {
     this.setTableSchema();
   }
 
+  componentWillUnmount() {
+    clearInterval(this.intervalId);
+  }
+
   render() {
+    if (!localStorage.getItem('token') && !localStorage.getItem('isAdmin')) {
+      return <Redirect to='/' />
+    }
     return (
         <Container>
           <Columns>
