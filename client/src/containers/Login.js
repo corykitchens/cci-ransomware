@@ -19,7 +19,8 @@ class Login extends Component {
       subtitle: 'Login',
       username: '',
       password: '',
-      modalText: ''
+      modalText: '',
+      isAdmin: false
     }
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
@@ -29,7 +30,7 @@ class Login extends Component {
   }
 
   handleUsernameChange(e) {
-      this.setState({username: e.target.value});
+    this.setState({username: e.target.value});
   }
 
   handlePasswordChange(e) {
@@ -37,7 +38,6 @@ class Login extends Component {
   }
 
   handleSubmit(e) {
-    console.log('Woohoo submit');
     e.preventDefault();
     const { attempt } = this.state;
     this.props.attemptPassword(attempt);
@@ -64,9 +64,12 @@ class Login extends Component {
     })
     .then(resp => resp.json())
     .then(results => {
-      console.log('Here');
-      console.log(results);
-      const { token } = results;
+      const { token, isAdmin } = results;
+      
+      if (isAdmin) {
+        this.setState({isAdmin: true});
+        localStorage.setItem('isAdmin', true);
+      }
       localStorage.setItem('token', token);
       this.setState({authenticated: true});
     })
@@ -77,7 +80,10 @@ class Login extends Component {
   }
 
   render() {
-    if (this.state.authenticated) {
+    if (this.state.authenticated && this.state.isAdmin) {
+      return <Redirect to='/admin' />
+    }
+    else if (this.state.authenticated) {
       return <Redirect to='/rules' />
     }
     return (
@@ -88,26 +94,31 @@ class Login extends Component {
             <Title title={this.state.title} classes={'title has-text-danger has-text-centered'}/>
             <Title title={this.state.subtitle} classes={'subtitle has-text-danger has-text-centered'} />
             <Columns>
-              <div className="column is-half is-offset-one-quarter">
-                <div className="content login-form">
-                  <div className="field">
-                    <label className="label">Team Username</label>
-                    <input className="input" type="text" placeholder="Team Name" value={this.state.username} onChange={this.handleUsernameChange}/>
-                  </div>
-                    <label className="label">Password</label>
-                  <input className="input" type="password" placeholder="Password" value={this.state.password}  onChange={this.handlePasswordChange}/>
-                    <div class="has-text-centered">
-                      <button className="button is-info is-rounded has-text-centered submit-btn" onClick={this.auth}>Login</button>
+              <Column>
+                <form>
+                  <div className="column is-half is-offset-one-quarter">
+                    <div className="content login-form">
+                      <div className="field">
+                        <label className="label">Team Username</label>
+                        <input className="input" type="text" placeholder="Team Name" value={this.state.username} onChange={this.handleUsernameChange}/>
+                      </div>
+                      <div className="field">
+                        <label className="label">Password</label>
+                        <input className="input" type="password" placeholder="Password" value={this.state.password}  onChange={this.handlePasswordChange}/>
+                      </div>
+                        <div class="has-text-centered">
+                          <button className="button is-info is-rounded has-text-centered submit-btn" onClick={this.auth}>Login</button>
+                        </div>
                     </div>
-                </div>
-              </div>
+                  </div>
+                </form>
+              </Column>
             </Columns>
             </Card>
           </Column>
         </Columns>
         <Modal classNames={this.state.modalClasses} disableModal={this.disableModal} modalText={this.state.modalText}/>
       </Container>
-
     )
   }
 }
