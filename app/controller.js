@@ -117,7 +117,6 @@ module.exports = {
   getContestById: (req, res) => {
     //TODO
     //Refactor
-    const data = contestCache;
     if (!contestCache.teams.length || !contestCache.flags.length) {
       instantiateTeamCache()
       .then((teams) => {
