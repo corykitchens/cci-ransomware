@@ -52,7 +52,7 @@ class AdminView extends Component {
   }
 
   fetchData() {
-    fetch('/api/contests/1', {
+    fetch('/api/contests/1/status', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'

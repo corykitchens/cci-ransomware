@@ -15,6 +15,21 @@ const resetCache = () => {
   contest.winner_id = null;
 }
 
+const buildContestStatusStructure = (teams, contestFlagStatus) => {
+  //for each team
+  let res = teams.map((t) => {
+    //set their flags map
+    t.flags = {};
+    for (let i = 1; i <= 6; i++) {
+      t.flags[i] = 0;
+    }
+    contestFlagStatus.forEach((d) => {
+      t.flags[d.flag_id] = d.team_id == t.team_id ? 1 : 0;
+    })
+    return t;
+  })
+  return res;
+}
 const tokenIsValid = (givenToken) => {
   return userCache.hasOwnProperty(givenToken);
 }
@@ -66,6 +81,16 @@ async function instantiateTeamFlags() {
   return results.rows;
 }
 
+async function getContestStatus() {
+  const results = await query(queries.getFoundFlagsByAllTeams, [])
+  return results.rows;
+}
+
+async function getAllTeams() {
+  const results = await query(queries.getAllTeams, [])
+  return results.rows;
+}
+
 const prepareResponse = (res, token) => {
   isGameOver(token)
   .then((gameOver) => {
@@ -77,6 +102,10 @@ const prepareResponse = (res, token) => {
   .catch((err) => {
     return res.send({message: "correct", gameOver: err});
   })
+};
+
+const handleErrorResponse = (err, res) => {
+  res.status(500).json({err: err});
 };
 
 module.exports = {
@@ -207,5 +236,24 @@ module.exports = {
   resetContest: (req, res) => {
     resetCache();
     //delete the found flags
+  },
+
+  getContestStatus: (req, res) => {
+    let data = {};
+    getAllTeams()
+    .then((teams) => {
+      data = teams;
+      return getContestStatus()
+    })
+    .then((results) => {
+      
+      res.status(200).json(buildContestStatusStructure(data, results));
+    })
+    // getContestStatus()
+    // .then((results) => {
+    //   buildResponseStructure(results);
+    //   res.status(200).json({data: results});
+    // })
+    .catch((err) => handleErrorResponse(err))
   }
 }

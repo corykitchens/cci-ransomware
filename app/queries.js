@@ -7,7 +7,7 @@ module.exports = {
   
   attemptFlag: 'select flag_id from flag where value=$1',
   
-  getTeams: 'select team_id, name from team',
+  getAllTeams: 'select team_id, name from team',
   
   getTeamById: 'select name from team where team_id=$1',
   
@@ -42,5 +42,8 @@ module.exports = {
   deleteFoundFlagsInContest: 'delete from team_flag \
                               where team_flag.flag_id in \
                               (select flag_id from contest_flag \
-                              where contest_flag.contest_id = $1)'
+                              where contest_flag.contest_id = $1)',
+
+  getFoundFlagsByAllTeams: 'select team.team_id, team_flag.flag_id from team \
+                            join team_flag on team_flag.team_id = team.team_id ORDER BY team.team_id;'
 }

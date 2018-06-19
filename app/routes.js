@@ -12,4 +12,6 @@ router.put('/flag', controller.attemptFlag)
 // Admin
 router.get('/contests/:contestId', controller.getContestById);
 
+router.get('/contests/:contestId/status', controller.getContestStatus);
+
 module.exports = router;
