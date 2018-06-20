@@ -22,15 +22,15 @@ class Navbar extends Component {
       return <Redirect to='/' />
     }
     return (
-        <nav class="navbar is-info" role="navigation" aria-label="main navigation">
-          <div class="navbar-brand">
-            <a class="navbar-item">
+        <nav className="navbar is-info" role="navigation" aria-label="main navigation">
+          <div className="navbar-brand">
+            <a className="navbar-item">
               CCI Ransomware
             </a>
           </div>
-          <div class="navbar-end">
-            <div class="navbar-item">
-              <a class="button is-warning" onClick={this.logout}>
+          <div className="navbar-end">
+            <div className="navbar-item">
+              <a className="button is-warning" onClick={this.logout}>
                 Logout
               </a>
             </div>

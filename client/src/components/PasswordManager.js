@@ -40,6 +40,12 @@ class PasswordManager extends Component {
       } else {
         this.setState({token: ''});
       }
+
+      if (localStorage.getItem('teamId')) {
+        this.setState({teamId: localStorage.getItem('teamId')});
+      } else {
+        this.setState({teamId: ''});
+      }
       this.state.foundFlags.forEach((e) => {
         let idx = this.state.passwords.indexOf(e);
         if (idx > -1) {
@@ -70,10 +76,11 @@ class PasswordManager extends Component {
       }
     }
     attemptPassword(data) {
-      fetch('/api/flag', {
+      fetch(`/api/contests/1/teams/${this.state.teamId}/flags`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.state.token}`
         },
         body: JSON.stringify({
           flag: data,

@@ -13,8 +13,11 @@ class AdminView extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      title: 'CCI Ransomware | Admin',
       contest: {
         contest_id: 1,
+        winner_id: null,
+        teams: [],
         flags: [
           {
             id: 1,
@@ -42,25 +45,41 @@ class AdminView extends Component {
           },
         ]
       },
-      teams: [],
-      title: 'CCI Ransomware | Admin'
     };
 
     this.getRand = this.getRand.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.setTableSchema = this.setTableSchema.bind(this);
+    this.updateWinner = this.updateWinner.bind(this);
   }
 
+  componentWillMount() {
+    this.setTableSchema();
+    if (localStorage.getItem('token')) {
+      this.setState({token: localStorage.getItem('token')});
+    }
+  }
+
+  componentDidMount() {
+    if (this.state.token) {
+      this.intervalId = setInterval(this.fetchData, 1000);
+      
+    }
+  }
+
+
   fetchData() {
-    fetch('/api/contests/1/status', {
+    fetch('/api/contests/1', {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.state.token}`
       }
     })
     .then(resp => resp.json())
-    .then(teams => {
-      this.setState({teams: teams});
+    .then(contestStatus => {
+      this.setState({contest: contestStatus.contest});
+      this.updateWinner();
     })
     .catch(err => {
       console.log(err);
@@ -76,22 +95,25 @@ class AdminView extends Component {
     this.setState({cols: cols});
   }
 
-  componentDidMount() {
-    this.intervalId = setInterval(this.fetchData, 1000);
-  }
-
-
   getRand() {
     return Math.floor(Math.random() * Math.floor(2));;
   }
 
-  componentWillMount() {
-    this.fetchData();
-    this.setTableSchema();
-  }
-
   componentWillUnmount() {
     clearInterval(this.intervalId);
+  }
+
+  updateWinner() {
+    // TODO
+    // Refactor
+    if (this.state.contest.winner_id !== null) {
+      const teams = this.state.contest.teams;
+      let tempTeam = teams[this.state.contest.winner_id-1]
+      tempTeam.isWinner = 'Winner!';
+      teams[this.state.contest.winner_id-1] = tempTeam;
+      this.setState({teams});
+      console.log(this.state.contest.teams);
+    }
   }
 
   render() {
@@ -123,7 +145,7 @@ class AdminView extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {this.state.teams.map((team) => {
+                    {this.state.contest.teams.map((team) => {
                       return (
                         <tr>
                           <td>
@@ -151,7 +173,6 @@ class AdminView extends Component {
                   </tbody>
                 </table>
               </Card>
-
             </Column>
           </Columns>
         </Container>

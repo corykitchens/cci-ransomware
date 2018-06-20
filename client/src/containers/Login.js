@@ -77,13 +77,14 @@ class Login extends Component {
     })
     .then(resp => resp.json())
     .then(results => {
-      const { token, isAdmin } = results;
+      const { token, team_id, isAdmin } = results;
       
       if (isAdmin) {
         this.setState({isAdmin: true});
         localStorage.setItem('isAdmin', true);
       }
       localStorage.setItem('token', token);
+      localStorage.setItem('teamId', team_id);
       this.setState({authenticated: true});
     })
     .catch(err => {
