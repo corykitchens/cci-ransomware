@@ -21,6 +21,11 @@ const buildContestStatusStructure = (teams, contestFlags) => {
     contestFlags.forEach((d) => {
       t.flags[d.flag_id] = d.team_id == t.team_id ? 1 : 0;
     })
+    if (contestCache.teams.hasOwnProperty(t.team_id)) {
+      t.timeRemaining = contestCache.getTeamsCurrentTime(t.team_id);
+    } else {
+      t.timeRemaining = '04:59:59';
+    }
     return t;
   })
   return res;

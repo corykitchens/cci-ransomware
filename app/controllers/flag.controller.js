@@ -1,4 +1,5 @@
 const userCache = require('../../config/cache/user.js');
+const contestCache = require('../../config/cache/contest.js');
 const { handleErrorResponse } = require('./utils.js');
 
 const { queryDb } = require('../../db');
@@ -15,7 +16,9 @@ module.exports = {
   attemptFlag: (req, res) => {
     const { teamId } = req.params;
     const { flag, currentTime } = req.body;
-
+    //Set the teams current time in contestCache
+    contestCache.setTeamsCurrentTime(teamId, currentTime);
+    
     if (req.user.team_id !== Number(teamId)) {
       handleErrorResponse(res, 401, "You are Unauthorized to send this request");
     } else {

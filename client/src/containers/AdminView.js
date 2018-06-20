@@ -90,7 +90,6 @@ class AdminView extends Component {
     let cols = this.state.contest.flags.map(flag => flag.key);
     cols.unshift('Flags');
     cols.push('Time Remaining');
-    cols.push('Game Over?');
     cols.push('Winner?');
     this.setState({cols: cols});
   }
@@ -160,9 +159,6 @@ class AdminView extends Component {
                           })}
                           <td>
                             {team.timeRemaining}
-                          </td>
-                          <td>
-                            {team.gameOver}
                           </td>
                           <td>
                             {team.isWinner}
