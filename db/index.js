@@ -6,7 +6,7 @@ async function getClient() {
   return client;
 }
 
-async function query(text, values) {
+async function queryDb(text, values) {
   try {
     const client = await getClient();
     const res = await client.query(text, values);
@@ -19,5 +19,5 @@ async function query(text, values) {
 
 module.exports = {
   getClient: getClient,
-  query: query
+  queryDb: queryDb
 }

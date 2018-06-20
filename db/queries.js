@@ -10,6 +10,8 @@ module.exports = {
   getAllTeams: 'select team_id, name from team',
   
   getTeamById: 'select name from team where team_id=$1',
+
+  getUserLevel: 'select admin from team where team_id=$1',
   
   getTeamsFlags: 'select distinct team.team_id, team.name, flag.flag_id, flag.value from team \
                  join team_flag on team.team_id = team_flag.team_id \

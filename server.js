@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const passport = require('passport')
-const routes = require('./app/routes.js');
+const routes = require('./config/routes.js');
 const port = process.env.PORT || 5000;
 
 require('./config/passport.js')(passport);

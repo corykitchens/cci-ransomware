@@ -1,10 +1,10 @@
-const queries = require('../app/queries.js');
-const { query } = require('../db');
+const { queryDb } = require('../db');
+const { auth } = require('../db/queries.js');
 const LocalStrategy = require('passport-local').Strategy;
 
 module.exports = (passport) => {
   passport.use(new LocalStrategy((name, password, cb) => {
-    query(queries.auth, [name])
+    queryDb(auth, [name])
     .then((results) => {
       if (results.rows.length > 0) {
         const team = results.rows[0];
@@ -31,7 +31,7 @@ module.exports = (passport) => {
   });
 
   passport.deserializeUser((name, cb) => {
-    query(queries.auth, [name])
+    queryDb(auth, [name])
     .then((results) => {
       return cb(null, results.rows[0]);
     })
