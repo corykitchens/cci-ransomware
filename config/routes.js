@@ -7,10 +7,8 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const { queryDb } = require('../db');
 const { getUserLevel } = require('../db/queries.js');
+const { handleErrorResponse } = require('../app/controllers/utils.js');
 
-const handleErrorResponse = (res, statusCode, err) => {
-  res.status(statusCode).json(err);
-};
 
 const isValidJwt = (req, res, next) => {
   if (req.headers.hasOwnProperty('authorization')) {

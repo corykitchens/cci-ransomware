@@ -1,4 +1,5 @@
 const contestCache = require('../../config/cache/contest.js');
+const { handleErrorResponse } = require('./utils.js');
 const { queryDb } = require('../../db');
 const {
   getAllTeams,
@@ -24,10 +25,6 @@ const buildContestStatusStructure = (teams, contestFlags) => {
   })
   return res;
 }
-
-const handleErrorResponse = (err, res) => {
-  res.status(500).json({err: err});
-};
 
 
 module.exports = {

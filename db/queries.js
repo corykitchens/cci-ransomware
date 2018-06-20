@@ -4,8 +4,10 @@ module.exports = {
   getContests: 'select contest_id, event_date, winner_id from contest',
   
   getContestById: 'select contest_id, event_date, winner_id from contest where contest_id = $1',
+
+  setTeamAsContestWinner: 'update contest set winner_id = $1 where contest_id = $2;',
   
-  attemptFlag: 'select flag_id from flag where value=$1',
+  getFlagByValue: 'select flag_id from flag where value=$1',
   
   getAllTeams: 'select team_id, name from team',
   
@@ -17,6 +19,9 @@ module.exports = {
                  join team_flag on team.team_id = team_flag.team_id \
                  join flag on team_flag.flag_id = flag.flag_id \
                  WHERE team.team_id = $1',
+
+  getTeamsFlagById: 'select * from team_flag where team_id=$1 and flag_id=$2',
+
 
   getTeamFlagCount: 'select distinct count(team.team_id) from team \
                  join team_flag on team.team_id = team_flag.team_id \
