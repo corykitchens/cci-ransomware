@@ -47,8 +47,7 @@ class Main extends Component {
               <Title title={this.state.title} classes={'title has-text-danger has-text-centered'}/>
               <Title title={this.state.subtitle} classes={'subtitle has-text-danger has-text-centered'} />
               <CountdownClock ref={ instance => { this.child = instance; }}/>
-              <div className="content has-text-centered">Unless 2 <i className="fab fa-bitcoin"></i> is received by haxxzor@tempmail.com</div>
-              <ContentMessage message="To access admin functions: enter the following passwords:" />
+              <ContentMessage message="To access admin functions, enter the following passwords:" />
               <PasswordManager decrementClock={this.decrementClock} gameCompleted={this.gameCompleted} gameOver={this.state.gameOver}/>
               </Card>
             </Column>
