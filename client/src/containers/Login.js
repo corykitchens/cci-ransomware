@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { Link, Redirect } from 'react-router-dom'
-import {browserHistory} from 'react-router';
+import { Redirect } from 'react-router-dom'
 import Modal from '../components/Modal';
 import Title from '../components/Title';
-import ContentMessage from '../components/ContentMessage';
 import Container from '../components/Container';
 import Card from '../components/Card';
 import Columns from '../components/Columns';
@@ -120,7 +118,7 @@ class Login extends Component {
                         <label className="label">Password</label>
                         <input className="input" type="password" placeholder="Password" value={this.state.password}  onChange={this.handlePasswordChange}/>
                       </div>
-                        <div class="has-text-centered">
+                        <div className="has-text-centered">
                           <button className="button is-info is-rounded has-text-centered submit-btn" onClick={this.auth}>Login</button>
                         </div>
                     </div>

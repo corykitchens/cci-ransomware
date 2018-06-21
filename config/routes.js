@@ -48,6 +48,7 @@ router.post('/auth', passport.authenticate('local'), authController.authenticate
 //AdminView endpoint
 router.get('/contests/:contestId', isValidJwt, isAdmin, contestController.getContestById);
 //Team Main / Attempt Flag endpoint
+router.get('/contests/:contestId/teams/:teamId/flags', flagController.getTeamFlags);
 router.put('/contests/:contestId/teams/:teamId/flags', isValidJwt, flagController.attemptFlag);
 
 module.exports = router;

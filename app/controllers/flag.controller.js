@@ -18,7 +18,7 @@ module.exports = {
     const { flag, currentTime } = req.body;
     //Set the teams current time in contestCache
     contestCache.setTeamsCurrentTime(teamId, currentTime);
-    
+    contestCache.setTeamCurrentAttempts(teamId, 1);
     if (req.user.team_id !== Number(teamId)) {
       handleErrorResponse(res, 401, "You are Unauthorized to send this request");
     } else {
@@ -50,8 +50,24 @@ module.exports = {
         }
       })()
       .catch(e => handleErrorResponse(res, 500, e));
-      
     }
-  }
-  
+  },
+
+  getTeamFlags: (req, res) => {
+    const { contestId, teamId } = req.params;
+    (async () => {
+      const teamFoundFlagCountResults = await queryDb(getTeamFlagCount, [teamId]);
+      if (teamFoundFlagCountResults.rows.length) {
+        const { count } = teamFoundFlagCountResults.rows[0];
+        const gameOver = Number(count) === userCache.maxFlag;
+        const current = contestCache.getTeamsCurrentTime(teamId);
+        const numberOfAttempts = contestCache.getTeamsCurrentNumberOfAttempts(teamId);
+        console.log(numberOfAttempts);
+        res.status(200).send({count: count, gameOver: gameOver, 'currentTime': current, numberOfAttempts: numberOfAttempts});
+      } else {
+        handleErrorResponse(res, 500, "Error getting Team flag count");
+      }
+    })()
+    .catch(e => handleErrorResponse(res, 500, e));
+  }  
 }

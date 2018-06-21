@@ -17,6 +17,7 @@ class CountdownClock extends Component {
     this.checkIfCountdownCompleted = this.checkIfCountdownCompleted.bind(this);
     this.instantiateTime = this.instantiateTime.bind(this);
     this.completeCountDown = this.completeCountDown.bind(this);
+    this.updateClock = this.updateClock.bind(this);
   }
 
   componentWillMount() {
@@ -25,8 +26,6 @@ class CountdownClock extends Component {
     const ceilingAsMoment = moment('2018-06-23 ' + ceiling);
     this.setState({floorAsMoment: floorAsMoment});
     this.setState({ceilingAsMoment: ceilingAsMoment});
-    this.instantiateTime();
-
   }
 
   componentDidMount() {
@@ -90,6 +89,16 @@ class CountdownClock extends Component {
     clearInterval(this.intervalId);
     this.setState({countdownComplete: true});
     this.decrementTime();
+  }
+
+  updateClock(timeStr = '04:59:59') {
+    let current = moment('2018-06-23' + ' ' + timeStr);
+    this.setState({ currentTime: moment(current).format('H:mm:ss')})
+    localStorage.setItem('current', current);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalId);
   }
 
   render() {

@@ -22,7 +22,7 @@ class Navbar extends Component {
       return <Redirect to='/' />
     }
     return (
-        <nav className="navbar is-info" role="navigation" aria-label="main navigation">
+        <nav className="navbar is-info"  aria-label="main navigation">
           <div className="navbar-brand">
             <a className="navbar-item">
               CCI Ransomware

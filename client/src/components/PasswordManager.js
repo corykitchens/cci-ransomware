@@ -8,10 +8,10 @@ class PasswordManager extends Component {
     constructor(props) {
         super(props);
         this.state = {
+          maxPasswords: 6,
           passwordAttempts: 0,
           correctAttempts: 0,
           incorrectAttempts: 0,
-          passwords: ['hello', 'password123', 'qwerty', 'letmein', 'abc123', 'mypassword'],
           foundFlags: [],
           modalClasses: '',
           disableInput: false
@@ -21,45 +21,57 @@ class PasswordManager extends Component {
         this.enableModal = this.enableModal.bind(this);
         this.disableModal = this.disableModal.bind(this);
         this.wasAttemptSuccessfull = this.wasAttemptSuccessfull.bind(this);
+        this.syncFlagCount = this.syncFlagCount.bind(this);
+        this.updateStateWithFlagCount = this.updateStateWithFlagCount.bind(this);
     }
 
+    syncFlagCount() {
+      let teamId = localStorage.getItem('teamId');
+      fetch(`/api/contests/1/teams/${teamId}/flags`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.state.token}`
+        },
+      })
+      .then(resp => resp.json())
+      .then(resp => this.updateStateWithFlagCount(resp))
+      .catch(error => console.log(error));
+    }
 
+    updateStateWithFlagCount(data) {
+      const { count, gameOver, numberOfAttempts, currentTime } = data;
+      if (Number(count) === this.state.maxPasswords && gameOver) {
+        this.setState({modalText: 'Game Complete!'});
+        this.setState({disableInput: true});
+        this.props.gameCompleted();
+        this.enableModal();
+      } else {
+        this.props.updateClock(currentTime);
+        this.setState({correctAttempts: Number(count)});
+        this.setState({passwordAttempts: Number(numberOfAttempts)});
+      }
+    }
 
     componentWillMount() {
-      if (localStorage.getItem('foundFlags')) {
-        localStorage.getItem('foundFlags').split(',').map((p) => {
-          this.state.foundFlags.push(p);
-        });
-        this.setState({foundFlags: this.state.foundFlags});
-      }
-      if (localStorage.getItem('correctAttempts')) {
-        this.setState({correctAttempts: localStorage.getItem('correctAttempts')});
-      }
       if (localStorage.getItem('token')) {
         this.setState({token: localStorage.getItem('token')});
       } else {
         this.setState({token: ''});
       }
-
       if (localStorage.getItem('teamId')) {
         this.setState({teamId: localStorage.getItem('teamId')});
+        this.syncFlagCount();
       } else {
         this.setState({teamId: ''});
       }
-      this.state.foundFlags.forEach((e) => {
-        let idx = this.state.passwords.indexOf(e);
-        if (idx > -1) {
-          this.state.passwords.splice(idx, 1);
-          this.setState({passwords: this.state.passwords});
-        }
-      });
     }
 
     wasAttemptSuccessfull(resp) {
 
       const { attempt, gameOver } = resp;
       if (attempt) {
-        this.setState({ correctAttempts: ++this.state.correctAttempts});
+        this.setState({ correctAttempts: Number(this.state.correctAttempts) + 1});
         this.persistState();
         this.setState({modalText: 'Correct!'});
         this.enableModal();
@@ -70,7 +82,6 @@ class PasswordManager extends Component {
           this.enableModal();
         }
       } else {
-        this.setState({ incorrectAttempts: ++this.state.incorrectAttempts});
         this.setState({modalClasses: 'is-active'});
         this.props.decrementClock();
         this.setState({modalText: 'Incorrect!'});
@@ -87,7 +98,6 @@ class PasswordManager extends Component {
         },
         body: JSON.stringify({
           flag: data,
-          token: this.state.token,
           currentTime: localStorage.getItem('current').split(' ')[4]
         })
       })
@@ -95,7 +105,9 @@ class PasswordManager extends Component {
       .then(resp => this.wasAttemptSuccessfull(resp))
       .catch(error => console.log(error));
 
-      this.setState({ passwordAttempts: ++this.state.passwordAttempts});
+      this.setState({ passwordAttempts: this.state.passwordAttempts+1});
+      localStorage.setItem('passwordAttemptCount', this.state.passwordAttempts);
+
       if (this.props.gameOver) {
         console.log('Game over');
         this.setState({disableInput: true});
@@ -105,7 +117,6 @@ class PasswordManager extends Component {
     }
 
     persistState() {
-      localStorage.setItem('foundFlags', this.state.foundFlags);
       localStorage.setItem('correctAttempts', this.state.correctAttempts);
     }
 
@@ -118,40 +129,38 @@ class PasswordManager extends Component {
     }
 
     render() {
-      const { foundFlags } = this.state;
-        return (
-            <Column>
-                <Columns>
-                    <PasswordInput placeholder="Attempt Password" attemptPassword={this.attemptPassword} disabled={this.state.disableInput}/>
-                </Columns>
-                {/* Debug Mode */}
-                <Columns>
-                  <Column>
+      return (
+          <Column>
+              <Columns>
+                  <PasswordInput placeholder="Attempt Password" attemptPassword={this.attemptPassword} disabled={this.state.disableInput}/>
+              </Columns>
+              {/* Debug Mode */}
+              <Columns>
+                <Column>
+                  <div className="content">
                     <div className="content">
-                      <div className="content">
-                        <table className="table">
-                          <thead>
-                            <tr>
-                              <td>Flag Attempts</td>
-                              <td>Found Flags</td>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <td>{this.state.passwordAttempts}</td>
-                              <td>{this.state.correctAttempts}</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
+                      <table className="table">
+                        <thead>
+                          <tr>
+                            <td>Flag Attempts</td>
+                            <td>Found Flags</td>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>{this.state.passwordAttempts}</td>
+                            <td>{this.state.correctAttempts}</td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
-                  </Column>
-                </Columns>
-                {/* End Debug Mode*/}
-                <Modal classNames={this.state.modalClasses} disableModal={this.disableModal} modalText={this.state.modalText}/>
-            </Column>
-        )
-
+                  </div>
+                </Column>
+              </Columns>
+              {/* End Debug Mode*/}
+              <Modal classNames={this.state.modalClasses} disableModal={this.disableModal} modalText={this.state.modalText}/>
+          </Column>
+      )
     }
 }
 

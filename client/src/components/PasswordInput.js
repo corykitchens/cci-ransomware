@@ -37,7 +37,7 @@ class PasswordInput extends Component {
         <form onSubmit={this.handleSubmit}>
 
           <input className="input" type="password" placeholder={placeholder} value={attempt} onChange={this.handleChange} disabled={disabled}/>
-          <div class="has-text-centered">
+          <div className="has-text-centered">
             <button className="button is-info is-rounded submit-btn" type="submit">Submit Password Attempt</button>
           </div>
         </form>

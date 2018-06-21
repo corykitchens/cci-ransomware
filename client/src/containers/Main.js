@@ -21,6 +21,7 @@ class Main extends Component {
     }
     this.decrementClock = this.decrementClock.bind(this);
     this.gameCompleted = this.gameCompleted.bind(this);
+    this.updateClock = this.updateClock.bind(this);
   }
 
   decrementClock() {
@@ -31,6 +32,11 @@ class Main extends Component {
     this.setState({'gameOver': true});
     this.child.completeCountDown();
     // this.child.zeroOutClock();
+  }
+
+  updateClock(timeStr) {
+    console.log('Received timeStr' + timeStr);
+    this.child.updateClock(timeStr);
   }
 
   render() {
@@ -48,7 +54,7 @@ class Main extends Component {
               <Title title={this.state.subtitle} classes={'subtitle has-text-danger has-text-centered'} />
               <CountdownClock ref={ instance => { this.child = instance; }}/>
               <ContentMessage message="To access admin functions, enter the following passwords:" />
-              <PasswordManager decrementClock={this.decrementClock} gameCompleted={this.gameCompleted} gameOver={this.state.gameOver}/>
+              <PasswordManager updateClock={this.updateClock} decrementClock={this.decrementClock} gameCompleted={this.gameCompleted} gameOver={this.state.gameOver}/>
               </Card>
             </Column>
           </Columns>

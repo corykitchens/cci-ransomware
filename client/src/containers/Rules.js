@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import Title from '../components/Title';
-import ContentMessage from '../components/ContentMessage';
 import Container from '../components/Container';
 import Card from '../components/Card';
 import Columns from '../components/Columns';
@@ -45,7 +44,7 @@ const Rules = (props) => {
                 </ul>
               </div>
             <Link to="/main">
-              <div class="has-text-centered">
+              <div className="has-text-centered">
                 <button className="button is-info is-rounded has-text-centered submit-btn">Begin!</button>
               </div>
             </Link>

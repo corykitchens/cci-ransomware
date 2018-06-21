@@ -5,7 +5,6 @@ import Column from '../components/Column';
 import Columns from '../components/Columns';
 import Title from '../components/Title';
 import Card from '../components/Card';
-import Table from '../components/Table';
 import Navbar from '../components/Navbar';
 
 class AdminView extends Component {
