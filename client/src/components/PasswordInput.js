@@ -22,8 +22,11 @@ class PasswordInput extends Component {
   handleSubmit(e) {
     e.preventDefault();
     const { attempt } = this.state;
-    this.props.attemptPassword(attempt);
-    this.setState({attempt: ''});
+    // If blank do nothing
+    if (attempt.length > 0) {
+      this.props.attemptPassword(attempt.trim());
+      this.setState({attempt: ''});
+    }
   }
   
   render() {

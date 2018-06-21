@@ -56,12 +56,14 @@ class PasswordManager extends Component {
     }
 
     wasAttemptSuccessfull(resp) {
-      if (resp.message.indexOf('correct') !== -1) {
+
+      const { attempt, gameOver } = resp;
+      if (attempt) {
         this.setState({ correctAttempts: ++this.state.correctAttempts});
         this.persistState();
         this.setState({modalText: 'Correct!'});
         this.enableModal();
-        if (resp.gameOver) {
+        if (gameOver) {
           this.setState({modalText: 'Game Complete!'});
           this.setState({disableInput: true});
           this.props.gameCompleted();
@@ -75,6 +77,7 @@ class PasswordManager extends Component {
         this.enableModal();
       }
     }
+    
     attemptPassword(data) {
       fetch(`/api/contests/1/teams/${this.state.teamId}/flags`, {
         method: 'PUT',
