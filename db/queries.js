@@ -9,7 +9,7 @@ module.exports = {
   
   getFlagByValue: 'select flag_id from flag where value=$1',
   
-  getAllTeams: 'select team_id, name from team',
+  getAllTeams: 'select team_id, name, admin from team',
   
   getTeamById: 'select name from team where team_id=$1',
 

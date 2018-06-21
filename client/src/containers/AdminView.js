@@ -145,26 +145,28 @@ class AdminView extends Component {
                   </thead>
                   <tbody>
                     {this.state.contest.teams.map((team) => {
-                      return (
-                        <tr>
-                          <td>
-                            {team.name}
-                          </td>
-                          {Object.keys(team.flags).map((k) => {
-                            return (
-                              <td className={["flag", team.flags[k]].join('')}>
+                      if (!team.admin) {
+                        return (
+                          <tr>
+                            <td>
+                              {team.name}
+                            </td>
+                            {Object.keys(team.flags).map((k) => {
+                              return (
+                                <td className={["flag", team.flags[k]].join('')}>
 
-                              </td>
-                            )
-                          })}
-                          <td>
-                            {team.timeRemaining}
-                          </td>
-                          <td>
-                            {team.isWinner}
-                          </td>
-                        </tr>
-                      )
+                                </td>
+                              )
+                            })}
+                            <td>
+                              {team.timeRemaining}
+                            </td>
+                            <td>
+                              {team.isWinner}
+                            </td>
+                          </tr>
+                        )
+                      }
                     })}
                   </tbody>
                 </table>
