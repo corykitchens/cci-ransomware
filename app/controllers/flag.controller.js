@@ -31,7 +31,7 @@ module.exports = {
           const teamsFlagResults = await queryDb(getTeamsFlagById, [teamId, flagId]);
           // If so, send message
           if (teamsFlagResults.rows.length) {
-            res.send({message: "Flag found previously"});
+            res.send({attempt: 0});
           } else {
             // If not, insert into database
             const timeStamp = new Date();
@@ -40,13 +40,13 @@ module.exports = {
             const teamFoundFlagCountResults = await queryDb(getTeamFlagCount, [teamId]);
             if (Number(teamFoundFlagCountResults.rows[0].count) === Number(userCache.maxFlag)) {
               const setContestWinnerResults = await queryDb(setTeamAsContestWinner, [teamId, req.params.contestId]);
-              res.send({message: 'correct', gameOver: true});
+              res.send({attempt: 1, gameOver: true});
             } else {
-              res.send({message: 'correct', gameOver: false});
+              res.send({attempt: 1, gameOver: false});
             }
           }
         } else {
-          res.send({data: "Invalid"});
+          res.send({attempt: 0});
         }
       })()
       .catch(e => handleErrorResponse(res, 500, e));
