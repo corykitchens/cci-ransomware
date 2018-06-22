@@ -9,8 +9,6 @@ import Login from './containers/Login';
 import Rules from './containers/Rules';
 import Main from './containers/Main';
 import AdminView from './containers/AdminView';
-import './components/CountdownClock.css';
-import 'whatwg-fetch';
 
 
 class App extends Component {

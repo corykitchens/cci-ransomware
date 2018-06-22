@@ -13,19 +13,21 @@ const {
 const buildContestStatusStructure = (teams, contestFlags) => {
   //for each team
   let res = teams.map((t) => {
-    //set their flags map
     t.flags = {};
     for (let i = 1; i <= 6; i++) {
       t.flags[i] = 0;
     }
-    contestFlags.forEach((d) => {
-      t.flags[d.flag_id] = d.team_id == t.team_id ? 1 : 0;
-    })
+
+    contestFlags.forEach((flag) => {
+      if (flag.team_id == t.team_id) {
+        t.flags[flag.flag_id] = 1;
+      }
+    });
+
     if (contestCache.teams.hasOwnProperty(t.team_id)) {
       t.timeRemaining = contestCache.getTeamsCurrentTime(t.team_id);
-    } else {
-      t.timeRemaining = '04:59:59';
     }
+    
     return t;
   })
   return res;
@@ -48,6 +50,7 @@ module.exports = {
 
       const foundFlagResults = await queryDb(getFoundFlagsByAllTeams, []);
       const foundFlags = foundFlagResults.rows;
+
       buildContestStatusStructure(data.contest.teams, foundFlags);
 
       res.json(data);

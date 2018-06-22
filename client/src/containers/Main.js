@@ -24,8 +24,8 @@ class Main extends Component {
     this.updateClock = this.updateClock.bind(this);
   }
 
-  decrementClock() {
-    this.child.decrement();
+  decrementClock(nextTime) {
+    this.child.decrement(nextTime);
   }
 
   gameCompleted() {

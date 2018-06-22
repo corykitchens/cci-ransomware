@@ -1,13 +1,18 @@
 function Team(teamId) {
   this.teamId = teamId;
   this.attemptCount = 0;
+  this.currentTime = '04:59:59';
 }
 
 module.exports = {
-  contest_id: 1,
   teams: {},
-  flags: [],
-  winner_id: null,
+  
+  init: function() {
+    const MAX_TEAMS = 20;
+    for (let i = 1; i <= 20; i++) {
+      this.teams[i] = new Team(i);
+    }
+  },
 
   resetCache: function() {
     contest_id = 1;
@@ -36,16 +41,13 @@ module.exports = {
   },
 
   getTeamsCurrentTime: function(teamId) {
-    console.log('Got teamId ' + teamId);
-    console.log(this.teams);
     if (!this.teams.hasOwnProperty(teamId)) {
       this.setTeam(teamId);
       this.setTeamsCurrentTime(teamId, '04:59:59');
-      console.log(this.teams);
     }
-    console.log(this.teams[teamId].currentTime);
     return this.teams[teamId].currentTime;
   },
+
   getAllTeamsCurrentTime: function() {
     return Object.keys(this.teams).map((teamId) => {
         return {

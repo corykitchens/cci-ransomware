@@ -88,10 +88,12 @@ class CountdownClock extends Component {
   completeCountDown() {
     clearInterval(this.intervalId);
     this.setState({countdownComplete: true});
+    this.setState({currentTime: 'GAME OVER'});
     this.decrementTime();
+
   }
 
-  updateClock(timeStr = '04:59:59') {
+  updateClock(timeStr = '04:59:00') {
     let current = moment('2018-06-23' + ' ' + timeStr);
     this.setState({ currentTime: moment(current).format('H:mm:ss')})
     localStorage.setItem('current', current);

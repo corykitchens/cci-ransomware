@@ -16,13 +16,31 @@ class PasswordManager extends Component {
           modalClasses: '',
           disableInput: false
         }
-        this.attemptPassword = this.attemptPassword.bind(this);
-        this.persistState = this.persistState.bind(this);
-        this.enableModal = this.enableModal.bind(this);
-        this.disableModal = this.disableModal.bind(this);
-        this.wasAttemptSuccessfull = this.wasAttemptSuccessfull.bind(this);
         this.syncFlagCount = this.syncFlagCount.bind(this);
         this.updateStateWithFlagCount = this.updateStateWithFlagCount.bind(this);
+        
+        this.disableGame = this.disableGame.bind(this);
+
+        this.attemptPassword = this.attemptPassword.bind(this);
+        this.wasAttemptSuccessfull = this.wasAttemptSuccessfull.bind(this);
+        this.persistState = this.persistState.bind(this);
+        
+        this.enableModal = this.enableModal.bind(this);
+        this.disableModal = this.disableModal.bind(this);
+    }
+
+    componentWillMount() {
+      if (localStorage.getItem('token')) {
+        this.setState({token: localStorage.getItem('token')});
+      } else {
+        this.setState({token: ''});
+      }
+      if (localStorage.getItem('teamId')) {
+        this.setState({teamId: localStorage.getItem('teamId')});
+        this.syncFlagCount();
+      } else {
+        this.setState({teamId: ''});
+      }
     }
 
     syncFlagCount() {
@@ -41,6 +59,10 @@ class PasswordManager extends Component {
 
     updateStateWithFlagCount(data) {
       const { count, gameOver, numberOfAttempts, currentTime } = data;
+      if (currentTime === '00:00:00') {
+       this.disableGame();
+      }
+
       if (Number(count) === this.state.maxPasswords && gameOver) {
         this.setState({modalText: 'Game Complete!'});
         this.setState({disableInput: true});
@@ -53,42 +75,13 @@ class PasswordManager extends Component {
       }
     }
 
-    componentWillMount() {
-      if (localStorage.getItem('token')) {
-        this.setState({token: localStorage.getItem('token')});
-      } else {
-        this.setState({token: ''});
-      }
-      if (localStorage.getItem('teamId')) {
-        this.setState({teamId: localStorage.getItem('teamId')});
-        this.syncFlagCount();
-      } else {
-        this.setState({teamId: ''});
-      }
+    disableGame() {
+     this.setState({modalText: 'Game Over!'});
+     this.setState({disableInput: true});
+     this.props.gameCompleted();
+     this.enableModal();  
     }
 
-    wasAttemptSuccessfull(resp) {
-
-      const { attempt, gameOver } = resp;
-      if (attempt) {
-        this.setState({ correctAttempts: Number(this.state.correctAttempts) + 1});
-        this.persistState();
-        this.setState({modalText: 'Correct!'});
-        this.enableModal();
-        if (gameOver) {
-          this.setState({modalText: 'Game Complete!'});
-          this.setState({disableInput: true});
-          this.props.gameCompleted();
-          this.enableModal();
-        }
-      } else {
-        this.setState({modalClasses: 'is-active'});
-        this.props.decrementClock();
-        this.setState({modalText: 'Incorrect!'});
-        this.enableModal();
-      }
-    }
-    
     attemptPassword(data) {
       fetch(`/api/contests/1/teams/${this.state.teamId}/flags`, {
         method: 'PUT',
@@ -107,12 +100,32 @@ class PasswordManager extends Component {
 
       this.setState({ passwordAttempts: this.state.passwordAttempts+1});
       localStorage.setItem('passwordAttemptCount', this.state.passwordAttempts);
+    }
 
-      if (this.props.gameOver) {
-        console.log('Game over');
+    wasAttemptSuccessfull(resp) {
+      const { attempt, gameOver, currentTime } = resp;
+      //If attempt was correct
+      if (attempt) {
+        this.setState({ correctAttempts: Number(this.state.correctAttempts) + 1});
+        this.persistState();
+        this.setState({modalText: 'Correct!'});
+        this.enableModal();
+      } 
+      //No it was not, state Incorrect
+      else {
+        this.setState({modalClasses: 'is-active'});
+        this.props.updateClock(currentTime);
+        this.setState({modalText: 'Incorrect!'});
+        this.enableModal();
+      }
+      if (gameOver) {
+        this.setState({modalText: 'Game Complete!'});
         this.setState({disableInput: true});
-      } else {
-        console.log('Game continue');
+        this.props.gameCompleted();
+        this.enableModal();
+      }
+      if (currentTime === '00:00:00') {
+       this.disableGame(); 
       }
     }
 
@@ -130,36 +143,34 @@ class PasswordManager extends Component {
 
     render() {
       return (
-          <Column>
-              <Columns>
-                  <PasswordInput placeholder="Attempt Password" attemptPassword={this.attemptPassword} disabled={this.state.disableInput}/>
-              </Columns>
-              {/* Debug Mode */}
-              <Columns>
-                <Column>
-                  <div className="content">
-                    <div className="content">
-                      <table className="table">
-                        <thead>
-                          <tr>
-                            <td>Flag Attempts</td>
-                            <td>Found Flags</td>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>{this.state.passwordAttempts}</td>
-                            <td>{this.state.correctAttempts}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </Column>
-              </Columns>
-              {/* End Debug Mode*/}
-              <Modal classNames={this.state.modalClasses} disableModal={this.disableModal} modalText={this.state.modalText}/>
-          </Column>
+        <Column>
+          <Columns>
+            <PasswordInput placeholder="Attempt Password" attemptPassword={this.attemptPassword} disabled={this.state.disableInput}/>
+          </Columns>
+          <Columns>
+            <Column>
+              <div className="content">
+                <div className="content">
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <td>Flag Attempts</td>
+                        <td>Found Flags</td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>{this.state.passwordAttempts}</td>
+                        <td>{this.state.correctAttempts}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </Column>
+          </Columns>
+        <Modal classNames={this.state.modalClasses} disableModal={this.disableModal} modalText={this.state.modalText}/>
+        </Column>
       )
     }
 }
