@@ -6,6 +6,7 @@ import Columns from '../components/Columns';
 import Title from '../components/Title';
 import Card from '../components/Card';
 import Navbar from '../components/Navbar';
+import AdminModal from '../components/AdminModal';
 
 class AdminView extends Component {
 
@@ -51,6 +52,11 @@ class AdminView extends Component {
     this.setTableSchema = this.setTableSchema.bind(this);
     this.updateWinner = this.updateWinner.bind(this);
     this.startTimer = this.startTimer.bind(this);
+
+    this.enableModal = this.enableModal.bind(this);
+    this.disableModal = this.disableModal.bind(this);
+    this.beginTimer = this.beginTimer.bind(this);
+
   }
 
   componentWillMount() {
@@ -67,8 +73,21 @@ class AdminView extends Component {
     }
   }
 
-  startTimer(e) {
-    e.preventDefault();
+  enableModal() {
+    this.setState({modalClasses: 'is-active'});
+  }
+
+  disableModal() {
+    this.setState({modalClasses: ''});
+  }
+
+
+  beginTimer(e) {
+    this.disableModal();
+    this.startTimer();
+  }
+
+  startTimer() {
     fetch('/api/contests/1/start', {
       method: 'POST',
       headers: {
@@ -139,7 +158,7 @@ class AdminView extends Component {
           <Columns>
             <Column>
               <div className="box has-text-centered">
-                <button className="button is-danger is-large" onClick={this.startTimer}>Start Timer</button>
+                <button className="button is-danger is-large" onClick={this.enableModal}>Start Timer</button>
               </div>
               <Card className="card-container">
                 <Title title={this.state.title} classes={'title has-text-danger has-text-centered'}/>
@@ -190,6 +209,7 @@ class AdminView extends Component {
             </Column>
           </Columns>
         </Container>
+        <AdminModal classNames={this.state.modalClasses} disableModal={this.disableModal} modelText="Are you sure you want to begin the Timer?" beginTimer={this.beginTimer} />
       </div>
     )
   }
