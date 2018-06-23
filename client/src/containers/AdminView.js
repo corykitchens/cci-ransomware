@@ -58,6 +58,7 @@ class AdminView extends Component {
     this.disableModal = this.disableModal.bind(this);
 
     this.initStartTimer = this.initStartTimer.bind(this);
+    this.initPauseTimer = this.initPauseTimer.bind(this);
 
     this.pauseTimer = this.pauseTimer.bind(this);
     this.beginTimer = this.beginTimer.bind(this);
@@ -79,8 +80,14 @@ class AdminView extends Component {
   }
 
   initStartTimer() {
-    this.setState({modalText: 'Are you sure you want to begin the Timer'});
-    this.setState({modalStatus: 'START'});
+    this.setState({modalText: 'Are you sure you want to begin the Timer?',
+                   modalTitle: 'Start Timer'});
+    this.enableModal();
+  }
+
+  initPauseTimer() {
+    this.setState({modalText: 'Are you sure you want to pause the Timer?',
+                   modalTitle: 'Pause Timer'});
     this.enableModal();
   }
 
@@ -99,8 +106,8 @@ class AdminView extends Component {
 
   pauseTimer(e) {
     e.preventDefault();
+    this.disableModal();
     this.stopTimer();
-
   }
 
   stopTimer() {
@@ -190,7 +197,7 @@ class AdminView extends Component {
             <Column>
               <div className="box has-text-centered">
                 { !this.state.timerStarted ? <button className="button is-link is-large" onClick={this.initStartTimer}>Start Timer</button> : null }
-                { this.state.timerStarted ? <button className="button is-primary is-large" onClick={this.pauseTimer}>Pause Timer</button> : null }
+                { this.state.timerStarted ? <button className="button is-primary is-large" onClick={this.initPauseTimer}>Pause Timer</button> : null }
               </div>
               <Card className="card-container">
                 <Title title={this.state.title} classes={'title has-text-danger has-text-centered'}/>
@@ -241,7 +248,7 @@ class AdminView extends Component {
             </Column>
           </Columns>
         </Container>
-        <AdminModal classNames={this.state.modalClasses} disableModal={this.disableModal} modalText="Are you sure you want to begin the Timer?" beginTimer={this.beginTimer} />
+        <AdminModal title={this.state.modalTitle} timerStarted={this.state.timerStarted} classNames={this.state.modalClasses} disableModal={this.disableModal} modalText={this.state.modalText} beginTimer={this.beginTimer} pauseTimer={this.pauseTimer} />
       </div>
     )
   }

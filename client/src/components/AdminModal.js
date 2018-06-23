@@ -7,7 +7,7 @@ const AdminModal = (props) => {
       <div className="modal-background"></div>
       <div className="modal-card has-text-centered">
         <header className="modal-card-head">
-          <p className="modal-card-title">Begin Timer?</p>
+          <p className="modal-card-title">{props.title}</p>
           <button className="delete" aria-label="close"  onClick={props.disableModal}></button>
         </header>
         <section className="modal-card-body">
@@ -15,7 +15,8 @@ const AdminModal = (props) => {
           {props.modalText}
           </div>
           <div className="content">
-            <button className="button is-link is-rounded submit-btn" onClick={props.beginTimer}>Start Timer</button>
+            {!props.timerStarted ? <button className="button is-link is-rounded submit-btn" onClick={props.beginTimer}>Start Timer</button> : null }
+            {props.timerStarted ? <button className="button is-danger is-rounded submit-btn" onClick={props.pauseTimer}>Pause Timer</button> : null }
             <button className="button is-dark is-rounded submit-btn" onClick={props.disableModal}>Cancel</button>
           </div>
           <div className="contest">
