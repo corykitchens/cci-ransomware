@@ -14,6 +14,7 @@ class AdminView extends Component {
     super(props);
     this.state = {
       title: 'CCI Ransomware | Admin',
+      timerStarted: false,
       contest: {
         contest_id: 1,
         winner_id: null,
@@ -55,8 +56,12 @@ class AdminView extends Component {
 
     this.enableModal = this.enableModal.bind(this);
     this.disableModal = this.disableModal.bind(this);
-    this.beginTimer = this.beginTimer.bind(this);
 
+    this.initStartTimer = this.initStartTimer.bind(this);
+
+    this.pauseTimer = this.pauseTimer.bind(this);
+    this.beginTimer = this.beginTimer.bind(this);
+    this.stopTimer = this.stopTimer.bind(this);
   }
 
   componentWillMount() {
@@ -73,6 +78,12 @@ class AdminView extends Component {
     }
   }
 
+  initStartTimer() {
+    this.setState({modalText: 'Are you sure you want to begin the Timer'});
+    this.setState({modalStatus: 'START'});
+    this.enableModal();
+  }
+
   enableModal() {
     this.setState({modalClasses: 'is-active'});
   }
@@ -81,10 +92,29 @@ class AdminView extends Component {
     this.setState({modalClasses: ''});
   }
 
-
   beginTimer(e) {
     this.disableModal();
     this.startTimer();
+  }
+
+  pauseTimer(e) {
+    e.preventDefault();
+    this.stopTimer();
+
+  }
+
+  stopTimer() {
+    fetch('/api/contests/1/stop', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.state.token}`
+      }
+    })
+    .then(resp => resp.json())
+    .then(respAsJson => console.log(respAsJson))
+    .catch(err => console.log(err));
+    this.setState({timerStarted: false});
   }
 
   startTimer() {
@@ -98,6 +128,7 @@ class AdminView extends Component {
     .then(resp => resp.json())
     .then(respAsJson => console.log(respAsJson))
     .catch(err => console.log(err));
+    this.setState({timerStarted: true});
   }
 
   fetchData() {
@@ -158,7 +189,8 @@ class AdminView extends Component {
           <Columns>
             <Column>
               <div className="box has-text-centered">
-                <button className="button is-danger is-large" onClick={this.enableModal}>Start Timer</button>
+                { !this.state.timerStarted ? <button className="button is-link is-large" onClick={this.initStartTimer}>Start Timer</button> : null }
+                { this.state.timerStarted ? <button className="button is-primary is-large" onClick={this.pauseTimer}>Pause Timer</button> : null }
               </div>
               <Card className="card-container">
                 <Title title={this.state.title} classes={'title has-text-danger has-text-centered'}/>
@@ -209,7 +241,7 @@ class AdminView extends Component {
             </Column>
           </Columns>
         </Container>
-        <AdminModal classNames={this.state.modalClasses} disableModal={this.disableModal} modelText="Are you sure you want to begin the Timer?" beginTimer={this.beginTimer} />
+        <AdminModal classNames={this.state.modalClasses} disableModal={this.disableModal} modalText="Are you sure you want to begin the Timer?" beginTimer={this.beginTimer} />
       </div>
     )
   }

@@ -15,10 +15,11 @@ const AdminModal = (props) => {
           {props.modalText}
           </div>
           <div className="content">
-            <button className="button is-danger is-rounded submit-btn" onClick={props.beginTimer}>Yes</button>
+            <button className="button is-link is-rounded submit-btn" onClick={props.beginTimer}>Start Timer</button>
+            <button className="button is-dark is-rounded submit-btn" onClick={props.disableModal}>Cancel</button>
           </div>
           <div className="contest">
-            <button className="button is-info is-rounded submit-btn" onClick={props.disableModal}>Cancel</button>
+            
           </div>
           
         </section>
