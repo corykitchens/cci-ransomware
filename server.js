@@ -4,7 +4,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const passport = require('passport')
 const routes = require('./config/routes.js');
-const contestCache = require('./config/cache/contest.js');
+const contestCache = require('./app/models/contest.js');
 const port = process.env.PORT || 5000;
 
 

@@ -1,5 +1,5 @@
-const userCache = require('../../config/cache/user.js');
-const contestCache = require('../../config/cache/contest.js');
+const userCache = require('../models/user.js');
+const contestCache = require('../models/contest.js');
 const { handleErrorResponse, decrementClock } = require('./utils.js');
 
 

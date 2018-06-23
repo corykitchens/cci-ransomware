@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const contestCache = require('../config/cache/contest.js');
+const contestCache = require('../app/models/contest.js');
 
 describe('Contest Cache', function() {
 

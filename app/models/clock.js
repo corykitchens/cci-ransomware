@@ -1,4 +1,4 @@
-const contestCache = require('../config/cache/contest.js');
+const contestCache = require('./contest.js');
 const moment = require('moment');
 
 class TestClock {
@@ -22,6 +22,7 @@ class TestClock {
 
 
 function Clock() {
+  this.status = null;
 
   this.subtractTimeByOneSecond = function(team) {
     const currentTimeAsDateObj = moment(`2018-06-23 ${team.currentTime}`);
@@ -44,6 +45,12 @@ function Clock() {
 
   this.tick = function() {
     this.intervalId = setInterval(this.decrementTime, 1000);
+    this.status = 'Clock Started';
+  }
+
+  this.stop = function() {
+    clearInterval(this.intervalId);
+    this.status = 'Clock Stopped';
   }
 }
 
