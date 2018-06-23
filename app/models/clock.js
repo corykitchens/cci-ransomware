@@ -44,13 +44,21 @@ function Clock() {
   }.bind(this);
 
   this.tick = function() {
-    this.intervalId = setInterval(this.decrementTime, 1000);
-    this.status = 'Clock Started';
+    if (this.status === 'Clock Started') {
+      return;
+    } else {
+      this.intervalId = setInterval(this.decrementTime, 1000);
+      this.status = 'Clock Started';
+    }
   }
 
   this.stop = function() {
-    clearInterval(this.intervalId);
-    this.status = 'Clock Stopped';
+    if (this.status === 'Clock Stopped') {
+      return;
+    } else {
+      clearInterval(this.intervalId);
+      this.status = 'Clock Stopped';
+    }
   }
 }
 
