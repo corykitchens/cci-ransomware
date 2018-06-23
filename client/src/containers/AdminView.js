@@ -50,6 +50,7 @@ class AdminView extends Component {
     this.fetchData = this.fetchData.bind(this);
     this.setTableSchema = this.setTableSchema.bind(this);
     this.updateWinner = this.updateWinner.bind(this);
+    this.startTimer = this.startTimer.bind(this);
   }
 
   componentWillMount() {
@@ -66,6 +67,19 @@ class AdminView extends Component {
     }
   }
 
+  startTimer(e) {
+    e.preventDefault();
+    fetch('/api/contests/1/start', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.state.token}`
+      }
+    })
+    .then(resp => resp.json())
+    .then(respAsJson => console.log(respAsJson))
+    .catch(err => console.log(err));
+  }
 
   fetchData() {
     fetch('/api/contests/1', {
@@ -124,6 +138,9 @@ class AdminView extends Component {
         <Container>
           <Columns>
             <Column>
+              <div className="box has-text-centered">
+                <button className="button is-danger is-large" onClick={this.startTimer}>Start Timer</button>
+              </div>
               <Card className="card-container">
                 <Title title={this.state.title} classes={'title has-text-danger has-text-centered'}/>
                 {this.props.isAdmin}

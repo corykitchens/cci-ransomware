@@ -47,7 +47,9 @@ router.get('/', (req, res) => res.status(200).json({message: 'CCI-Ransomware API
 router.post('/auth', passport.authenticate('local'), authController.authenticate);
 //AdminView endpoint
 router.get('/contests/:contestId', isValidJwt, isAdmin, contestController.getContestById);
+router.post('/contests/:contestId/start', isValidJwt, isAdmin, contestController.startContest);
 //Team Main / Attempt Flag endpoint
+router.get('/contests/:contestId/teams/:teamId/time', contestController.getTeamTime);
 router.get('/contests/:contestId/teams/:teamId/flags', flagController.getTeamFlags);
 router.put('/contests/:contestId/teams/:teamId/flags', isValidJwt, flagController.attemptFlag);
 

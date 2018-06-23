@@ -27,6 +27,9 @@ class PasswordManager extends Component {
         
         this.enableModal = this.enableModal.bind(this);
         this.disableModal = this.disableModal.bind(this);
+
+        this.pullTeamState = this.pullTeamState.bind(this);
+        this.updateClock = this.updateClock.bind(this);
     }
 
     componentWillMount() {
@@ -40,6 +43,20 @@ class PasswordManager extends Component {
         this.syncFlagCount();
       } else {
         this.setState({teamId: ''});
+      }
+    }
+
+    componentDidMount() {
+      this.intervalId = setInterval(this.pullTeamState, 1000);
+    }
+
+    componentWillUnmount() {
+      clearInterval(this.intervalId);
+    }
+
+    updateClock(currentTime) {
+      if (currentTime) {
+        this.props.updateClock(currentTime);
       }
     }
 
@@ -80,6 +97,20 @@ class PasswordManager extends Component {
      this.setState({disableInput: true});
      this.props.gameCompleted();
      this.enableModal();  
+    }
+
+    pullTeamState() {
+      let teamId = localStorage.getItem('teamId');
+      fetch(`/api/contests/1/teams/${teamId}/time`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.state.token}`
+        },
+      })
+      .then(resp => resp.json())
+      .then(resp => this.updateClock(resp.currentTime))
+      .catch(error => console.log(error));
     }
 
     attemptPassword(data) {

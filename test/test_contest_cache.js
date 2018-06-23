@@ -13,7 +13,6 @@ describe('Contest Cache', function() {
     });
     it('Each entry in team should have a teamId, currentTime, and attemptCount', function() {
         contestCache.init();
-        console.log(contestCache.teams);
         expect(2).to.equal(2);
         // Object.keys(contestCache.teams).forEach((team) => {
         //     console.log(team);

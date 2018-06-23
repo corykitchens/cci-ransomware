@@ -1,4 +1,5 @@
 const contestCache = require('../../config/cache/contest.js');
+const clock = require('../clock.js');
 const { handleErrorResponse } = require('./utils.js');
 const { queryDb } = require('../../db');
 const {
@@ -56,6 +57,15 @@ module.exports = {
       res.json(data);
     })()
     .catch(e => handleErrorResponse(e));
-  }
+  },
 
+  startContest: (req, res) => {
+    clock.tick();
+    res.status(200).json({message: 'Contest started'});
+  },
+
+  getTeamTime: (req, res) => {
+    const { teamId } = req.params;
+    res.status(200).send({currentTime: contestCache.teams[teamId].currentTime });
+  }
 }
