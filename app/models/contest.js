@@ -1,7 +1,8 @@
 function Team(teamId) {
   this.teamId = teamId;
   this.attemptCount = 0;
-  this.currentTime = '04:59:59';
+  this.currentTime = '05:00:00';
+  this.gameOver = false;
 }
 
 module.exports = {

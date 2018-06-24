@@ -1,4 +1,5 @@
-const contestCache = require('../../config/cache/contest.js');
+const contestCache = require('../models/contest.js');
+const clock = require('../models/clock.js');
 const { handleErrorResponse } = require('./utils.js');
 const { queryDb } = require('../../db');
 const {
@@ -56,6 +57,40 @@ module.exports = {
       res.json(data);
     })()
     .catch(e => handleErrorResponse(e));
-  }
+  },
 
+  startContest: (req, res) => {
+    clock.tick();
+    if (clock.status) {
+      res.status(200).json({status: clock.status});
+    } else {
+      res.status(500).json({status: clock.status});
+    }
+  },
+
+  stopContest: (req, res) => {
+    clock.stop();
+    if (clock.status) {
+      res.status(200).json({status: clock.status});
+    } else {
+      res.status(500).json({status: clock.status});
+    }
+  },
+
+  statusContest: (req, res) => {
+    if (clock.status) {
+      res.status(200).json({status: clock.status});
+    } else {
+      res.status(200).json({});
+    }
+  },
+
+  getTeamTime: (req, res) => {
+    const { teamId } = req.params;
+    let status = 'Clock Stopped';
+    if (clock.status) {
+      status = clock.status;
+    }
+    res.status(200).send({currentTime: contestCache.teams[teamId].currentTime, status: status});
+  }
 }

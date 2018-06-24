@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { handleErrorResponse } = require('./utils.js');
-const userCache = require('../../config/cache/user.js');
+const userCache = require('../models/user.js');
 
 
 module.exports =  {

@@ -1,5 +1,5 @@
-const userCache = require('../../config/cache/user.js');
-const contestCache = require('../../config/cache/contest.js');
+const userCache = require('../models/user.js');
+const contestCache = require('../models/contest.js');
 const { handleErrorResponse, decrementClock } = require('./utils.js');
 
 
@@ -43,6 +43,7 @@ module.exports = {
             const teamFoundFlagCountResults = await queryDb(getTeamFlagCount, [teamId]);
             if (Number(teamFoundFlagCountResults.rows[0].count) === Number(userCache.maxFlag)) {
               const setContestWinnerResults = await queryDb(setTeamAsContestWinner, [teamId, req.params.contestId]);
+              contestCache.teams[teamId].gameOver = true;
               res.send({attempt: 1, gameOver: true, currentTime: currentTime});
             } else {
               res.send({attempt: 1, gameOver: false, currentTime: currentTime});
@@ -64,10 +65,12 @@ module.exports = {
       const teamFoundFlagCountResults = await queryDb(getTeamFlagCount, [teamId]);
       if (teamFoundFlagCountResults.rows.length) {
         const { count } = teamFoundFlagCountResults.rows[0];
-        const gameOver = Number(count) === userCache.maxFlag;
+        if (!contestCache.teams[teamId].gameOver) {
+          contestCache.teams[teamId].gameOver = (Number(count) === userCache.maxFlag);
+        }
         const current = contestCache.getTeamsCurrentTime(teamId);
         const numberOfAttempts = contestCache.getTeamsCurrentNumberOfAttempts(teamId);
-        res.status(200).send({count: count, gameOver: gameOver, 'currentTime': current, numberOfAttempts: numberOfAttempts});
+        res.status(200).send({count: count, gameOver: contestCache.teams[teamId].gameOver, 'currentTime': current, numberOfAttempts: numberOfAttempts});
       } else {
         handleErrorResponse(res, 500, "Error getting Team flag count");
       }

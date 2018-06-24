@@ -13,9 +13,7 @@ class CountdownClock extends Component {
       countdownComplete: false
     }
     this.decrementTime = this.decrementTime.bind(this);
-    this.decrement = this.decrement.bind(this);
     this.checkIfCountdownCompleted = this.checkIfCountdownCompleted.bind(this);
-    this.instantiateTime = this.instantiateTime.bind(this);
     this.completeCountDown = this.completeCountDown.bind(this);
     this.updateClock = this.updateClock.bind(this);
   }
@@ -29,7 +27,7 @@ class CountdownClock extends Component {
   }
 
   componentDidMount() {
-    this.intervalId = setInterval(this.decrementTime, this.state.modifier);
+
   }
 
   /*increaseTime() {
@@ -39,6 +37,7 @@ class CountdownClock extends Component {
     clearInterval(this.intervalId);
     setInterval(this.decrementTime, this.state.modifier);
   }*/
+
 
   decrementTime(amount = 1, t = 'seconds') {
     if (!this.state.countdownComplete) {
@@ -54,10 +53,6 @@ class CountdownClock extends Component {
     }
   }
 
-  decrement() {
-    this.decrementTime(15, 'minutes');
-  }
-
   checkIfCountdownCompleted(current) {
     const { ceilingAsMoment } = this.state;
     let currentHour = current.hours();
@@ -71,19 +66,19 @@ class CountdownClock extends Component {
     }
   }
 
-  instantiateTime() {
-    const { countdown, floor } = this.state;
-    if (localStorage.getItem('current')) {
-      let current = localStorage.getItem('current');
-      this.setState({ currentTime: moment(current).format('H:mm:ss')})
-      localStorage.setItem('current', current);
+  // instantiateTime() {
+  //   const { countdown, floor } = this.state;
+  //   if (localStorage.getItem('current')) {
+  //     let current = localStorage.getItem('current');
+  //     this.setState({ currentTime: moment(current).format('H:mm:ss')})
+  //     localStorage.setItem('current', current);
     
-    } else {
-      let current = moment('2018-06-23' + ' ' + countdown);
-      this.setState({ currentTime: moment(current).format('H:mm:ss')})
-      localStorage.setItem('current', current);
-    }
-  }
+  //   } else {
+  //     let current = moment('2018-06-23' + ' ' + countdown);
+  //     this.setState({ currentTime: moment(current).format('H:mm:ss')})
+  //     localStorage.setItem('current', current);
+  //   }
+  // }
 
   completeCountDown() {
     clearInterval(this.intervalId);

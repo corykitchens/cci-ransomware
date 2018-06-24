@@ -14,7 +14,7 @@ class PasswordManager extends Component {
           incorrectAttempts: 0,
           foundFlags: [],
           modalClasses: '',
-          disableInput: false
+          disableInput: true
         }
         this.syncFlagCount = this.syncFlagCount.bind(this);
         this.updateStateWithFlagCount = this.updateStateWithFlagCount.bind(this);
@@ -27,29 +27,60 @@ class PasswordManager extends Component {
         
         this.enableModal = this.enableModal.bind(this);
         this.disableModal = this.disableModal.bind(this);
+
+        this.pullTeamState = this.pullTeamState.bind(this);
+        this.updateClock = this.updateClock.bind(this);
     }
 
     componentWillMount() {
+      
+    }
+
+    componentDidMount() {
       if (localStorage.getItem('token')) {
         this.setState({token: localStorage.getItem('token')});
-      } else {
-        this.setState({token: ''});
       }
       if (localStorage.getItem('teamId')) {
         this.setState({teamId: localStorage.getItem('teamId')});
         this.syncFlagCount();
-      } else {
-        this.setState({teamId: ''});
+      }
+      this.intervalId = setInterval(this.pullTeamState, 1000);
+    }
+
+    componentWillUnmount() {
+      clearInterval(this.intervalId);
+    }
+
+    updateClock(currentTime, status) {
+      if (currentTime === '00:00:00') {
+        this.disableGame();
+        return;
+      }
+      
+      if (status === 'Clock Started') {
+        if (this.state.disableInput) {
+          this.setState({disableInput: false})
+        }
+      }
+
+      if (status === 'Clock Stopped') {
+        if (!this.state.disableInput) {
+          this.setState({disableInput: true});
+        }
+      }
+      if (currentTime) {
+        this.props.updateClock(currentTime);
       }
     }
 
     syncFlagCount() {
       let teamId = localStorage.getItem('teamId');
+      let token = localStorage.getItem('token');
       fetch(`/api/contests/1/teams/${teamId}/flags`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.state.token}`
+          'Authorization': `Bearer ${token}`
         },
       })
       .then(resp => resp.json())
@@ -59,15 +90,17 @@ class PasswordManager extends Component {
 
     updateStateWithFlagCount(data) {
       const { count, gameOver, numberOfAttempts, currentTime } = data;
-      if (currentTime === '00:00:00') {
+      
+      if (gameOver || currentTime === '00:00:00') {
        this.disableGame();
       }
 
       if (Number(count) === this.state.maxPasswords && gameOver) {
-        this.setState({modalText: 'Game Complete!'});
-        this.setState({disableInput: true});
-        this.props.gameCompleted();
-        this.enableModal();
+        // this.setState({modalText: 'Game Complete!'});
+        // this.setState({disableInput: true});
+        // this.props.gameCompleted();
+        // this.enableModal();
+        this.disableGame();
       } else {
         this.props.updateClock(currentTime);
         this.setState({correctAttempts: Number(count)});
@@ -76,10 +109,25 @@ class PasswordManager extends Component {
     }
 
     disableGame() {
+    clearInterval(this.intervalId);
      this.setState({modalText: 'Game Over!'});
      this.setState({disableInput: true});
      this.props.gameCompleted();
-     this.enableModal();  
+     this.enableModal();
+    }
+
+    pullTeamState() {
+      let teamId = localStorage.getItem('teamId');
+      fetch(`/api/contests/1/teams/${teamId}/time`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.state.token}`
+        },
+      })
+      .then(resp => resp.json())
+      .then(resp => this.updateClock(resp.currentTime, resp.status))
+      .catch(error => console.log(error));
     }
 
     attemptPassword(data) {
@@ -110,22 +158,19 @@ class PasswordManager extends Component {
         this.persistState();
         this.setState({modalText: 'Correct!'});
         this.enableModal();
-      } 
-      //No it was not, state Incorrect
-      else {
+      }
+      if (gameOver || currentTime === '00:00:00') {
+        this.disableGame(); 
+        // this.setState({modalText: 'Game Complete!'});
+        // this.setState({disableInput: true});
+        // this.props.gameCompleted();
+        // this.enableModal();
+      }
+      if (!attempt && !gameOver) {
         this.setState({modalClasses: 'is-active'});
         this.props.updateClock(currentTime);
         this.setState({modalText: 'Incorrect!'});
         this.enableModal();
-      }
-      if (gameOver) {
-        this.setState({modalText: 'Game Complete!'});
-        this.setState({disableInput: true});
-        this.props.gameCompleted();
-        this.enableModal();
-      }
-      if (currentTime === '00:00:00') {
-       this.disableGame(); 
       }
     }
 

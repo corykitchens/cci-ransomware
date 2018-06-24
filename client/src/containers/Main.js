@@ -35,7 +35,6 @@ class Main extends Component {
   }
 
   updateClock(timeStr) {
-    console.log('Received timeStr' + timeStr);
     this.child.updateClock(timeStr);
   }
 
