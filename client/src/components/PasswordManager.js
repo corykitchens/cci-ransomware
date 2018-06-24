@@ -52,6 +52,11 @@ class PasswordManager extends Component {
     }
 
     updateClock(currentTime, status) {
+      if (currentTime === '00:00:00') {
+        this.disableGame();
+        return;
+      }
+      
       if (status === 'Clock Started') {
         if (this.state.disableInput) {
           this.setState({disableInput: false})
@@ -153,13 +158,6 @@ class PasswordManager extends Component {
         this.persistState();
         this.setState({modalText: 'Correct!'});
         this.enableModal();
-      } 
-      //No it was not, state Incorrect
-      else {
-        this.setState({modalClasses: 'is-active'});
-        this.props.updateClock(currentTime);
-        this.setState({modalText: 'Incorrect!'});
-        this.enableModal();
       }
       if (gameOver || currentTime === '00:00:00') {
         this.disableGame(); 
@@ -167,6 +165,12 @@ class PasswordManager extends Component {
         // this.setState({disableInput: true});
         // this.props.gameCompleted();
         // this.enableModal();
+      }
+      if (!attempt && !gameOver) {
+        this.setState({modalClasses: 'is-active'});
+        this.props.updateClock(currentTime);
+        this.setState({modalText: 'Incorrect!'});
+        this.enableModal();
       }
     }
 

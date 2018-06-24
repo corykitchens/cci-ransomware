@@ -43,6 +43,7 @@ module.exports = {
             const teamFoundFlagCountResults = await queryDb(getTeamFlagCount, [teamId]);
             if (Number(teamFoundFlagCountResults.rows[0].count) === Number(userCache.maxFlag)) {
               const setContestWinnerResults = await queryDb(setTeamAsContestWinner, [teamId, req.params.contestId]);
+              contestCache.teams[teamId].gameOver = true;
               res.send({attempt: 1, gameOver: true, currentTime: currentTime});
             } else {
               res.send({attempt: 1, gameOver: false, currentTime: currentTime});
@@ -67,7 +68,6 @@ module.exports = {
         if (!contestCache.teams[teamId].gameOver) {
           contestCache.teams[teamId].gameOver = (Number(count) === userCache.maxFlag);
         }
-        const gameOver = Number(count) === userCache.maxFlag;
         const current = contestCache.getTeamsCurrentTime(teamId);
         const numberOfAttempts = contestCache.getTeamsCurrentNumberOfAttempts(teamId);
         res.status(200).send({count: count, gameOver: contestCache.teams[teamId].gameOver, 'currentTime': current, numberOfAttempts: numberOfAttempts});
