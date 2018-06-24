@@ -85,15 +85,17 @@ class PasswordManager extends Component {
 
     updateStateWithFlagCount(data) {
       const { count, gameOver, numberOfAttempts, currentTime } = data;
-      if (currentTime === '00:00:00') {
+      
+      if (gameOver || currentTime === '00:00:00') {
        this.disableGame();
       }
 
       if (Number(count) === this.state.maxPasswords && gameOver) {
-        this.setState({modalText: 'Game Complete!'});
-        this.setState({disableInput: true});
-        this.props.gameCompleted();
-        this.enableModal();
+        // this.setState({modalText: 'Game Complete!'});
+        // this.setState({disableInput: true});
+        // this.props.gameCompleted();
+        // this.enableModal();
+        this.disableGame();
       } else {
         this.props.updateClock(currentTime);
         this.setState({correctAttempts: Number(count)});
@@ -102,10 +104,11 @@ class PasswordManager extends Component {
     }
 
     disableGame() {
+    clearInterval(this.intervalId);
      this.setState({modalText: 'Game Over!'});
      this.setState({disableInput: true});
      this.props.gameCompleted();
-     this.enableModal();  
+     this.enableModal();
     }
 
     pullTeamState() {
@@ -158,14 +161,12 @@ class PasswordManager extends Component {
         this.setState({modalText: 'Incorrect!'});
         this.enableModal();
       }
-      if (gameOver) {
-        this.setState({modalText: 'Game Complete!'});
-        this.setState({disableInput: true});
-        this.props.gameCompleted();
-        this.enableModal();
-      }
-      if (currentTime === '00:00:00') {
-       this.disableGame(); 
+      if (gameOver || currentTime === '00:00:00') {
+        this.disableGame(); 
+        // this.setState({modalText: 'Game Complete!'});
+        // this.setState({disableInput: true});
+        // this.props.gameCompleted();
+        // this.enableModal();
       }
     }
 

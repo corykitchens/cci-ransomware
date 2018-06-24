@@ -31,6 +31,7 @@ function Clock() {
     
     if (currentHour <= 23 && currentHour >= 6) {
         team.currentTime = '00:00:00';
+        team.gameOver = true;
     } else {
         team.currentTime = subtractedTimeAsDateObj.format('HH:mm:ss')
     }
@@ -39,7 +40,9 @@ function Clock() {
   this.decrementTime = function() {
     const self = this;
     Object.keys(contestCache.teams).forEach((teamId) => {
-      self.subtractTimeByOneSecond(contestCache.teams[teamId]);
+      if (!contestCache.teams[teamId].gameOver) {
+        self.subtractTimeByOneSecond(contestCache.teams[teamId]);
+      }
     });
   }.bind(this);
 

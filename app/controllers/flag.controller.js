@@ -64,10 +64,13 @@ module.exports = {
       const teamFoundFlagCountResults = await queryDb(getTeamFlagCount, [teamId]);
       if (teamFoundFlagCountResults.rows.length) {
         const { count } = teamFoundFlagCountResults.rows[0];
+        if (!contestCache.teams[teamId].gameOver) {
+          contestCache.teams[teamId].gameOver = (Number(count) === userCache.maxFlag);
+        }
         const gameOver = Number(count) === userCache.maxFlag;
         const current = contestCache.getTeamsCurrentTime(teamId);
         const numberOfAttempts = contestCache.getTeamsCurrentNumberOfAttempts(teamId);
-        res.status(200).send({count: count, gameOver: gameOver, 'currentTime': current, numberOfAttempts: numberOfAttempts});
+        res.status(200).send({count: count, gameOver: contestCache.teams[teamId].gameOver, 'currentTime': current, numberOfAttempts: numberOfAttempts});
       } else {
         handleErrorResponse(res, 500, "Error getting Team flag count");
       }
