@@ -5,7 +5,7 @@ module.exports = {
   
   getContestById: 'select contest_id, event_date, winner_id from contest where contest_id = $1',
 
-  setTeamAsContestWinner: 'update contest set winner_id = $1 where contest_id = $2;',
+  setTeamAsContestWinner: 'update contest set winner_id = case when winner_id is null then $1 else winner_id end where contest_id = $2;',
   
   getFlagByValue: 'select flag_id from flag where value=$1',
   
