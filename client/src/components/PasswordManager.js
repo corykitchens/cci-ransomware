@@ -14,7 +14,7 @@ class PasswordManager extends Component {
           incorrectAttempts: 0,
           foundFlags: [],
           modalClasses: '',
-          disableInput: false
+          disableInput: true
         }
         this.syncFlagCount = this.syncFlagCount.bind(this);
         this.updateStateWithFlagCount = this.updateStateWithFlagCount.bind(this);
@@ -33,20 +33,17 @@ class PasswordManager extends Component {
     }
 
     componentWillMount() {
+      
+    }
+
+    componentDidMount() {
       if (localStorage.getItem('token')) {
         this.setState({token: localStorage.getItem('token')});
-      } else {
-        this.setState({token: ''});
       }
       if (localStorage.getItem('teamId')) {
         this.setState({teamId: localStorage.getItem('teamId')});
         this.syncFlagCount();
-      } else {
-        this.setState({teamId: ''});
       }
-    }
-
-    componentDidMount() {
       this.intervalId = setInterval(this.pullTeamState, 1000);
     }
 
@@ -54,7 +51,18 @@ class PasswordManager extends Component {
       clearInterval(this.intervalId);
     }
 
-    updateClock(currentTime) {
+    updateClock(currentTime, status) {
+      if (status === 'Clock Started') {
+        if (this.state.disableInput) {
+          this.setState({disableInput: false})
+        }
+      }
+
+      if (status === 'Clock Stopped') {
+        if (!this.state.disableInput) {
+          this.setState({disableInput: true});
+        }
+      }
       if (currentTime) {
         this.props.updateClock(currentTime);
       }
@@ -62,11 +70,12 @@ class PasswordManager extends Component {
 
     syncFlagCount() {
       let teamId = localStorage.getItem('teamId');
+      let token = localStorage.getItem('token');
       fetch(`/api/contests/1/teams/${teamId}/flags`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.state.token}`
+          'Authorization': `Bearer ${token}`
         },
       })
       .then(resp => resp.json())
@@ -109,7 +118,7 @@ class PasswordManager extends Component {
         },
       })
       .then(resp => resp.json())
-      .then(resp => this.updateClock(resp.currentTime))
+      .then(resp => this.updateClock(resp.currentTime, resp.status))
       .catch(error => console.log(error));
     }
 
