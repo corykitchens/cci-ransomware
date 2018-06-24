@@ -77,6 +77,14 @@ module.exports = {
     }
   },
 
+  statusContest: (req, res) => {
+    if (clock.status) {
+      res.status(200).json({status: clock.status});
+    } else {
+      res.status(200).json({});
+    }
+  },
+
   getTeamTime: (req, res) => {
     const { teamId } = req.params;
     res.status(200).send({currentTime: contestCache.teams[teamId].currentTime });

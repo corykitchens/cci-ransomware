@@ -63,6 +63,8 @@ class AdminView extends Component {
     this.pauseTimer = this.pauseTimer.bind(this);
     this.beginTimer = this.beginTimer.bind(this);
     this.stopTimer = this.stopTimer.bind(this);
+
+    this.getClockStatus = this.getClockStatus.bind(this);
   }
 
   componentWillMount() {
@@ -75,10 +77,30 @@ class AdminView extends Component {
   componentDidMount() {
     if (this.state.token) {
       this.intervalId = setInterval(this.fetchData, 1000);
-      
     }
+    this.getClockStatus();
   }
 
+  getClockStatus() {
+    fetch('/api/contests/1/status', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.state.token}`
+      }
+    })
+    .then(resp => resp.json())
+    .then((respAsJson) => {
+      if (respAsJson.hasOwnProperty('status')) {
+        const { status } = respAsJson;
+        console.log(status);
+        if (status === 'Clock Started') {
+          this.setState({timerStarted: true});
+        }
+      }
+    })
+    .catch(err => console.log(err));
+  }
   initStartTimer() {
     this.setState({modalText: 'Are you sure you want to begin the Timer?',
                    modalTitle: 'Start Timer'});
